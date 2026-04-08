@@ -8,14 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var viewModel = LearningViewModel()
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            Tab(Constants.completedString, systemImage: Constants.completedIconString){
+                CompletedView()
+            }
+            
+            Tab(Constants.studyingString, systemImage: Constants.studyingIconString){
+                StudyingView()
+            }
+            
+            Tab(Constants.plannedString, systemImage: Constants.plannedIconString){
+                PlannedView()
+            }
+            
         }
-        .padding()
     }
 }
 
