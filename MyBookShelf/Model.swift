@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 // Enum untuk status agar data konsisten
 enum StudyStatus: String, Codable, CaseIterable {
     case planned = "Akan Dipelajari"

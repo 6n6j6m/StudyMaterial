@@ -2,28 +2,33 @@
 //  ContentView.swift
 //  MyBookShelf
 //
-//  Created by Muhammad Najmi Rahmani  on 08/04/26.
-//
 
 import SwiftUI
 
 struct ContentView: View {
+    // 1. Buat satu sumber kebenaran (source of truth) di sini
     @StateObject var viewModel = LearningViewModel()
+    
     var body: some View {
         TabView {
-            Tab(Constants.completedString, systemImage: Constants.completedIconString){
-                CompletedView()
-            }
+            // Gunakan view generic yang sama, cukup ganti status & judul
+            LearningListView(status: .studying, title: Constants.studyingString)
+                .tabItem {
+                    Label(Constants.studyingString, systemImage: Constants.studyingIconString)
+                }
             
-            Tab(Constants.studyingString, systemImage: Constants.studyingIconString){
-                StudyingView()
-            }
+            LearningListView(status: .planned, title: Constants.plannedString)
+                .tabItem {
+                    Label(Constants.plannedString, systemImage: Constants.plannedIconString)
+                }
             
-            Tab(Constants.plannedString, systemImage: Constants.plannedIconString){
-                PlannedView()
-            }
-            
+            LearningListView(status: .completed, title: Constants.completedString)
+                .tabItem {
+                    Label(Constants.completedString, systemImage: Constants.completedIconString)
+                }
         }
+        // 2. Bagikan VM ke seluruh child views melalui Environment
+        .environmentObject(viewModel)
     }
 }
 
