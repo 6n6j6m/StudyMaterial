@@ -4,14 +4,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
-    // 1. Buat satu sumber kebenaran (source of truth) di sini
-    @StateObject var viewModel = LearningViewModel()
-    
     var body: some View {
         TabView {
-            // Gunakan view generic yang sama, cukup ganti status & judul
             LearningListView(status: .studying, title: Constants.studyingString)
                 .tabItem {
                     Label(Constants.studyingString, systemImage: Constants.studyingIconString)
@@ -27,11 +24,10 @@ struct ContentView: View {
                     Label(Constants.completedString, systemImage: Constants.completedIconString)
                 }
         }
-        // 2. Bagikan VM ke seluruh child views melalui Environment
-        .environmentObject(viewModel)
     }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(for: LearningTask.self, inMemory: true)
 }

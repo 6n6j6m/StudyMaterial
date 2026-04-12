@@ -2,10 +2,9 @@
 //  MyBookShelfApp.swift
 //  MyBookShelf
 //
-//  Created by Muhammad Najmi Rahmani  on 08/04/26.
-//
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MyBookShelfApp: App {
@@ -13,5 +12,7 @@ struct MyBookShelfApp: App {
         WindowGroup {
             ContentView()
         }
+        // Menambahkan Model Container untuk SwiftData
+        .modelContainer(for: LearningTask.self)
     }
 }

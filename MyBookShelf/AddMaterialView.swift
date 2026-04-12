@@ -4,12 +4,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddMaterialView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var viewModel: LearningViewModel // Ambil VM dari environment
+    @Environment(\.modelContext) var modelContext // Akses SwiftData Context
     
-    // Status awal saat form dibuka (planned, studying, atau completed)
     var initialStatus: StudyStatus
     
     @State private var topic = ""
@@ -31,8 +31,9 @@ struct AddMaterialView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        // NYATA: Tambahkan data ke ViewModel
-                        viewModel.addTask(topic: topic, platform: platform, status: initialStatus)
+                        // SWIFTDATA: Masukkan data baru ke context
+                        let newTask = LearningTask(topic: topic, platform: platform, status: initialStatus)
+                        modelContext.insert(newTask)
                         dismiss()
                     }
                     .disabled(topic.isEmpty || platform.isEmpty)
@@ -40,9 +41,4 @@ struct AddMaterialView: View {
             }
         }
     }
-}
-
-#Preview {
-    AddMaterialView(initialStatus: .planned)
-        .environmentObject(LearningViewModel())
 }

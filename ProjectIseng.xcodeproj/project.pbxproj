@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		DB90C7EE2F8576490041F188 /* MyBookShelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyBookShelf.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB90C7EE2F8576490041F188 /* ProjectIseng.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectIseng.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		DB90C7EF2F8576490041F188 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DB90C7EE2F8576490041F188 /* MyBookShelf.app */,
+				DB90C7EE2F8576490041F188 /* ProjectIseng.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DB90C7ED2F8576490041F188 /* MyBookShelf */ = {
+		DB90C7ED2F8576490041F188 /* ProjectIseng */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "MyBookShelf" */;
+			buildConfigurationList = DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "ProjectIseng" */;
 			buildPhases = (
 				DB90C7EA2F8576490041F188 /* Sources */,
 				DB90C7EB2F8576490041F188 /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				DB90C7F02F8576490041F188 /* MyBookShelf */,
 			);
-			name = MyBookShelf;
+			name = ProjectIseng;
 			packageProductDependencies = (
 			);
 			productName = MyBookShelf;
-			productReference = DB90C7EE2F8576490041F188 /* MyBookShelf.app */;
+			productReference = DB90C7EE2F8576490041F188 /* ProjectIseng.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "MyBookShelf" */;
+			buildConfigurationList = DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "ProjectIseng" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DB90C7ED2F8576490041F188 /* MyBookShelf */,
+				DB90C7ED2F8576490041F188 /* ProjectIseng */,
 			);
 		};
 /* End PBXProject section */
@@ -309,7 +309,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "MyBookShelf" */ = {
+		DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "ProjectIseng" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DB90C7F72F85764A0041F188 /* Debug */,
@@ -318,7 +318,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "MyBookShelf" */ = {
+		DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "ProjectIseng" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DB90C7FA2F85764A0041F188 /* Debug */,

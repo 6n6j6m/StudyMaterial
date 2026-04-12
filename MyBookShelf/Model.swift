@@ -2,21 +2,28 @@
 //  Model.swift
 //  MyBookShelf
 //
-//  Created by Muhammad Najmi Rahmani  on 08/04/26.
-//
 
 import Foundation
+import SwiftData
 
-// Enum untuk status agar data konsisten
+// Enum tetap sama, harus Codable agar bisa disimpan
 enum StudyStatus: String, Codable, CaseIterable {
     case planned = "Akan Dipelajari"
     case studying = "Sedang Belajar"
     case completed = "Sudah Belajar"
 }
 
-struct LearningTask: Identifiable, Codable {
-    var id = UUID()
+@Model
+class LearningTask {
+    var id: UUID
     var topic: String
-    var platform: String // Misal: YouTube, Udemy, Books
+    var platform: String
     var status: StudyStatus
+    
+    init(id: UUID = UUID(), topic: String, platform: String, status: StudyStatus) {
+        self.id = id
+        self.topic = topic
+        self.platform = platform
+        self.status = status
+    }
 }

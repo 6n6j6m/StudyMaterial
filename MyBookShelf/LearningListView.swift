@@ -4,83 +4,114 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LearningListView: View {
-    @EnvironmentObject var viewModel: LearningViewModel // Ambil data dari satu VM yang sama
+    @Environment(\.modelContext) var modelContext
     @State private var isShowingAddSheet = false
+    
+    // SWIFTDATA: Mengambil semua task dari database
+    @Query(sort: \LearningTask.topic) var allTasks: [LearningTask]
     
     let status: StudyStatus
     let title: String
     
-    // Filter data hanya yang sesuai status-nya
+    // Filter secara lokal (untuk saat ini)
     var filteredTasks: [LearningTask] {
-        viewModel.tasks.filter { $0.status == status }
+        allTasks.filter { $0.status == status }
     }
     
     var body: some View {
-        ZStack {
-            VStack {
-                Text(title)
-                    .font(.largeTitle.bold())
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                
-                if filteredTasks.isEmpty {
-                    Spacer()
-                    ContentUnavailableView(
-                        "Empty List",
-                        systemImage: "book.closed",
-                        description: Text("Start adding items to '\(title)'")
-                    )
-                    Spacer()
-                } else {
-                    List {
-                        ForEach(filteredTasks) { task in
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(task.topic)
-                                    .font(.headline)
-                                Text(task.platform)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
+        NavigationStack {
+            ZStack {
+                VStack {
+                    if filteredTasks.isEmpty {
+                        Spacer()
+                        ContentUnavailableView(
+                            "Empty List",
+                            systemImage: "book.closed",
+                            description: Text("No items in '\(title)'")
+                        )
+                        Spacer()
+                    } else {
+                        List {
+                            ForEach(filteredTasks) { task in
+                                NavigationLink {
+                                    LearningTaskDetailView(task: task)
+                                } label: {
+                                    VStack(alignment: .leading, spacing: 5) {
+                                        Text(task.topic)
+                                            .font(.headline)
+                                        Text(task.platform)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    switch status {
+                                    case .planned:
+                                        Button {
+                                            task.status = .studying // SwiftData otomatis deteksi perubahan
+                                        } label: {
+                                            Label("Start", systemImage: "play.circle")
+                                        }
+                                        .tint(.blue)
+
+                                    case .studying:
+                                        Button {
+                                            task.status = .completed
+                                        } label: {
+                                            Label("Done", systemImage: "checkmark.circle")
+                                        }
+                                        .tint(.green)
+
+                                    case .completed:
+                                        Button {
+                                            task.status = .studying
+                                        } label: {
+                                            Label("Re-study", systemImage: "arrow.uturn.backward")
+                                        }
+                                        .tint(.orange)
+                                    }
+                                }
+                            }
+                            .onDelete { offsets in
+                                // SWIFTDATA: Menghapus task
+                                for index in offsets {
+                                    let taskToDelete = filteredTasks[index]
+                                    modelContext.delete(taskToDelete)
+                                }
                             }
                         }
-                        .onDelete { offsets in
-                            // Fitur hapus data
-                            viewModel.deleteTask(at: offsets, for: status)
+                    }
+                }
+
+                // FAB
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button {
+                            isShowingAddSheet = true
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.title2.bold())
+                                .foregroundColor(.white)
+                                .frame(width: 60, height: 60)
+                                .background(Color.black)
+                                .clipShape(Circle())
+                                .shadow(radius: 10)
                         }
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 20)
                     }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            // Floating Action Button
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button {
-                        isShowingAddSheet = true
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.title2.bold())
-                            .foregroundColor(.white)
-                            .frame(width: 60, height: 60)
-                            .background(Color.black)
-                            .clipShape(Circle())
-                            .shadow(radius: 10)
-                    }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
-                }
-            }
+            .navigationTitle(title)
         }
         .sheet(isPresented: $isShowingAddSheet) {
             AddMaterialView(initialStatus: status)
         }
     }
-}
-
-#Preview {
-    LearningListView(status: .planned, title: "Planned")
-        .environmentObject(LearningViewModel())
 }
