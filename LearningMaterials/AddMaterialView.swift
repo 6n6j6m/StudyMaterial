@@ -14,6 +14,7 @@ struct AddMaterialView: View {
     
     @State private var topic = ""
     @State private var platform = ""
+    @State private var link = ""
 
     var body: some View {
         NavigationStack {
@@ -21,6 +22,7 @@ struct AddMaterialView: View {
                 Section(header: Text("Learning Details")) {
                     TextField("Topic (e.g. SwiftUI)", text: $topic)
                     TextField("Platform (e.g. YouTube)", text: $platform)
+                    TextField("Sumber belajar (URL)", text: $link)
                 }
             }
             .navigationTitle("New Material")
@@ -32,7 +34,7 @@ struct AddMaterialView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         // SWIFTDATA: Masukkan data baru ke context
-                        let newTask = LearningTask(topic: topic, platform: platform, status: initialStatus)
+                        let newTask = LearningTask(topic: topic, platform: platform, status: initialStatus, sumber: link)
                         modelContext.insert(newTask)
                         dismiss()
                     }

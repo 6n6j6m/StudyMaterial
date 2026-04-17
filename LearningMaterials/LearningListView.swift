@@ -8,14 +8,15 @@ import SwiftData
 
 struct LearningListView: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.colorScheme) var colorScheme
     @State private var isShowingAddSheet = false
     
     // SWIFTDATA: Mengambil semua task dari database
-    @Query(sort: \LearningTask.topic) var allTasks: [LearningTask]
+    @Query(sort: \LearningTask.topic) private var allTasks: [LearningTask]
     
     let status: StudyStatus
     let title: String
-    
+
     // Filter secara lokal (untuk saat ini)
     var filteredTasks: [LearningTask] {
         allTasks.filter { $0.status == status }
@@ -24,16 +25,20 @@ struct LearningListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                
+                // Di belakang floating action button (layer 1)
                 VStack {
+                    // Kosong
                     if filteredTasks.isEmpty {
                         Spacer()
                         ContentUnavailableView(
                             "Empty List",
-                            systemImage: "book.closed",
-                            description: Text("No items in '\(title)'")
+                            systemImage: Constants.closedbookIconString,
+                            description: Text("No items in \(title)")
                         )
                         Spacer()
                     } else {
+                        // Show the data
                         List {
                             ForEach(filteredTasks) { task in
                                 NavigationLink {
@@ -47,6 +52,8 @@ struct LearningListView: View {
                                             .foregroundColor(.secondary)
                                     }
                                 }
+                                
+                                // Swipe Action
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                     switch status {
                                     case .planned:
@@ -75,6 +82,8 @@ struct LearningListView: View {
                                     }
                                 }
                             }
+                            
+                            // Delete trailing untuk data yang di loop ForEach
                             .onDelete { offsets in
                                 // SWIFTDATA: Menghapus task
                                 for index in offsets {
@@ -86,7 +95,7 @@ struct LearningListView: View {
                     }
                 }
 
-                // FAB
+                // Floating action button (layer 2)
                 VStack {
                     Spacer()
                     HStack {
@@ -96,15 +105,16 @@ struct LearningListView: View {
                         } label: {
                             Image(systemName: "plus")
                                 .font(.title2.bold())
-                                .foregroundColor(.white)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                                 .frame(width: 60, height: 60)
-                                .background(Color.black)
+                                .background(Color.primary)
                                 .clipShape(Circle())
                                 .shadow(radius: 10)
                         }
-                        .padding(.trailing, 20)
-                        .padding(.bottom, 20)
+                    
                     }
+                    .padding(20)
+                    .padding(.bottom, 20)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -114,4 +124,9 @@ struct LearningListView: View {
             AddMaterialView(initialStatus: status)
         }
     }
+}
+
+#Preview {
+    LearningListView(status: .completed, title: Constants.completedString)
+        .modelContainer(for: LearningTask.self, inMemory: true)
 }

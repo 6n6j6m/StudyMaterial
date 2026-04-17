@@ -15,4 +15,5 @@ struct Constants {
     static let studyingIconString = "book"
     static let completedIconString = "book.closed"
     static let plannedIconString = "clock.arrow.trianglehead.counterclockwise.rotate.90"
+    static let closedbookIconString = "book.closed"
 }

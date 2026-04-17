@@ -19,11 +19,13 @@ class LearningTask {
     var topic: String
     var platform: String
     var status: StudyStatus
+    var sumber: String
     
-    init(id: UUID = UUID(), topic: String, platform: String, status: StudyStatus) {
+    init(id: UUID = UUID(), topic: String, platform: String, status: StudyStatus, sumber: String) {
         self.id = id
         self.topic = topic
         self.platform = platform
         self.status = status
+        self.sumber = sumber
     }
 }
