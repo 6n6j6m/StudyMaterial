@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		DB90C7EE2F8576490041F188 /* ProjectIseng.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectIseng.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB90C7EE2F8576490041F188 /* LearningMaterials.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LearningMaterials.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DB90C7F02F8576490041F188 /* MyBookShelf */ = {
+		DB90C7F02F8576490041F188 /* LearningMaterials */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MyBookShelf;
+			path = LearningMaterials;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		DB90C7E52F8576490041F188 = {
 			isa = PBXGroup;
 			children = (
-				DB90C7F02F8576490041F188 /* MyBookShelf */,
+				DB90C7F02F8576490041F188 /* LearningMaterials */,
 				DB90C7EF2F8576490041F188 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		DB90C7EF2F8576490041F188 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DB90C7EE2F8576490041F188 /* ProjectIseng.app */,
+				DB90C7EE2F8576490041F188 /* LearningMaterials.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DB90C7ED2F8576490041F188 /* ProjectIseng */ = {
+		DB90C7ED2F8576490041F188 /* LearningMaterials */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "ProjectIseng" */;
+			buildConfigurationList = DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "LearningMaterials" */;
 			buildPhases = (
 				DB90C7EA2F8576490041F188 /* Sources */,
 				DB90C7EB2F8576490041F188 /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DB90C7F02F8576490041F188 /* MyBookShelf */,
+				DB90C7F02F8576490041F188 /* LearningMaterials */,
 			);
-			name = ProjectIseng;
+			name = LearningMaterials;
 			packageProductDependencies = (
 			);
 			productName = MyBookShelf;
-			productReference = DB90C7EE2F8576490041F188 /* ProjectIseng.app */;
+			productReference = DB90C7EE2F8576490041F188 /* LearningMaterials.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "ProjectIseng" */;
+			buildConfigurationList = DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "LearningMaterials" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DB90C7ED2F8576490041F188 /* ProjectIseng */,
+				DB90C7ED2F8576490041F188 /* LearningMaterials */,
 			);
 		};
 /* End PBXProject section */
@@ -311,7 +311,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "ProjectIseng" */ = {
+		DB90C7E92F8576490041F188 /* Build configuration list for PBXProject "LearningMaterials" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DB90C7F72F85764A0041F188 /* Debug */,
@@ -320,7 +320,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "ProjectIseng" */ = {
+		DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "LearningMaterials" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DB90C7FA2F85764A0041F188 /* Debug */,
