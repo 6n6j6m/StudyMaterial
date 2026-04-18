@@ -10,6 +10,7 @@ struct LearningListView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.colorScheme) var colorScheme
     @State private var isShowingAddSheet = false
+    @State private var searchText = ""
     
     // SWIFTDATA: Mengambil semua task dari database
     @Query(sort: \LearningTask.topic) private var allTasks: [LearningTask]
@@ -19,7 +20,17 @@ struct LearningListView: View {
 
     // Filter secara lokal (untuk saat ini)
     var filteredTasks: [LearningTask] {
-        allTasks.filter { $0.status == status }
+        if searchText.isEmpty {
+            return allTasks.filter { $0.status == status }
+        }
+        else {
+            let searchText = searchText.lowercased()
+            return allTasks.filter {
+                $0.topic.lowercased().contains(searchText)
+                || $0.topic.lowercased().contains(searchText)
+                || $0.note.lowercased().contains(searchText)
+            }.filter { $0.status == status }
+        }
     }
     
     var body: some View {
@@ -120,6 +131,7 @@ struct LearningListView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle(title)
         }
+        .searchable(text: $searchText, prompt: "Cari Materi")
         .sheet(isPresented: $isShowingAddSheet) {
             AddMaterialView(initialStatus: status)
         }

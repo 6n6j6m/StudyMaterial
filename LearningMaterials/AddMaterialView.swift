@@ -15,6 +15,7 @@ struct AddMaterialView: View {
     @State private var topic = ""
     @State private var platform = ""
     @State private var link = ""
+    @State private var notes = ""
 
     var body: some View {
         NavigationStack {
@@ -23,6 +24,7 @@ struct AddMaterialView: View {
                     TextField("Topic (e.g. SwiftUI)", text: $topic)
                     TextField("Platform (e.g. YouTube)", text: $platform)
                     TextField("Sumber belajar (URL)", text: $link)
+                    TextField("Notes", text: $notes)
                 }
             }
             .navigationTitle("New Material")

@@ -25,6 +25,10 @@ struct LearningTaskDetailView: View {
             Section("URL") {
                 Link("\(task.sumber)", destination: URL(string: task.sumber)!)
             }
+            
+            Section("Catatan") {
+                Text(task.note)
+            }
         }
         .navigationTitle("Task Detail")
         .navigationBarTitleDisplayMode(.inline)
@@ -32,7 +36,11 @@ struct LearningTaskDetailView: View {
 }
 
 #Preview {
-    let task = LearningTask(topic: "SwiftUI", platform: "YouTube", status: .studying, sumber: "https://www.youtube.com/watch?v=Q1Q1-Q1Q1Q1")
+    let task = LearningTask(topic: "SwiftUI",
+                            platform: "YouTube",
+                            status: .studying,
+                            sumber: "https://www.youtube.com/watch?v=Q1Q1-Q1Q1Q1",
+                            note: "")
     NavigationStack {
         LearningTaskDetailView(task: task)
     }
