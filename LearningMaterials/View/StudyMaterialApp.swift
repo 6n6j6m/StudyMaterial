@@ -7,12 +7,12 @@ import SwiftUI
 import SwiftData
 
 @main
-struct MyBookShelfApp: App {
+struct StudyMaterialApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
         // Menambahkan Model Container untuk SwiftData
-        .modelContainer(for: LearningTask.self)
+        .modelContainer(for: [StudyMaterial.self])
     }
 }
