@@ -5,6 +5,8 @@
 
 import Foundation
 import SwiftData
+import PDFKit
+import SwiftUI
 
 // Enum tetap sama, harus Codable agar bisa disimpan
 enum StudyStatus: String, Codable, CaseIterable {
@@ -14,17 +16,17 @@ enum StudyStatus: String, Codable, CaseIterable {
 }
 
 @Model
-class LearningTask {
+class StudyMaterial {
     var id: UUID
     var topic: String
-    var platform: String
+    var deskripsi: String
     var status: StudyStatus
-    var sumber: String
+    var sumber: [URL]
     
-    init(id: UUID = UUID(), topic: String, platform: String, status: StudyStatus, sumber: String) {
+    init(id: UUID = UUID(), topic: String, deskripsi: String, status: StudyStatus, sumber: [URL]) {
         self.id = id
         self.topic = topic
-        self.platform = platform
+        self.deskripsi = deskripsi
         self.status = status
         self.sumber = sumber
     }
