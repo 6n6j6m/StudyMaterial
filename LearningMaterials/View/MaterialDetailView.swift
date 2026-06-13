@@ -25,15 +25,14 @@ struct MaterialDetailView: View {
                         switch material.status {
                         case .studying:
                             Color.white
-                                .foregroundStyle(Color.red)
                         case .completed:
-                            Color.primaryBlue
+                            Color.white.opacity(0)
                         case .planned:
-                            Color.primaryBlue
+                            Color.white.opacity(0)
                         }
                     }
                     .foregroundStyle(material.status == .studying ? .black : colorScheme == .dark ? .black : .white)
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                 
                 Text("Planned")
                     .frame(width: 120, height: 30, alignment: .center)
@@ -41,15 +40,15 @@ struct MaterialDetailView: View {
                     .background{
                         switch material.status {
                         case .studying:
-                            Color.primaryBlue
+                            Color.white.opacity(0)
                         case .completed:
-                            Color.primaryBlue
+                            Color.white.opacity(0)
                         case .planned:
                             Color.white
                         }
                     }
                     .foregroundStyle(material.status == .planned ? .black : colorScheme == .dark ? .black : .white)
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                 
                 
                 Text("Completed")
@@ -58,20 +57,23 @@ struct MaterialDetailView: View {
                     .background{
                         switch material.status {
                         case .studying:
-                            Color.primaryBlue
+                            Color.white.opacity(0)
                         case .completed:
                             Color.white
                         case .planned:
-                            Color.primaryBlue
+                            Color.white.opacity(0)
                         }
                     }
                     .foregroundStyle(material.status == .completed ? .black : colorScheme == .dark ? .black : .white)
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                 
             }
             .frame(maxWidth: .infinity, maxHeight: 40)
             .background(Color.primaryBlue)
-            .cornerRadius(10)
+            .cornerRadius(100)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20.0))
+            
+            
             
             Text("Overview & Description")
                 .font(.headline)
@@ -95,15 +97,42 @@ struct MaterialDetailView: View {
             }
             .frame(maxWidth: .infinity)
             
-            List(material.sumber, id: \.self){ url in
-                NavigationLink {
-                    PDFViewer(url: url)
-                } label: {
-                    Text("\(url.lastPathComponent)")
+            ScrollView {
+                LazyVStack{
+                    ForEach(material.sumber, id: \.self){ url in
+                        NavigationLink {
+                            PDFViewer(url: url)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text("\(url.lastPathComponent)")
+                                        .font(.system(.caption, weight: .bold))
+                                    
+                                    Spacer()
+                                    
+                                    Text("Sizeaaaaaaaaaaaaaa")
+                                        .font(.system(.caption))
+                                    
+                                }
+                                .padding(10)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "ellipsis")
+                                    .padding(10)
+                            }
+                        }
+                        .padding(10)
+                        .frame(width: 365, height: 80, alignment: .topLeading)
+                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20.0))
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.gray.opacity(0.9))
+                        )
+                    }
                 }
             }
-            .listStyle(.plain)
-            
+                        
             Spacer()
         }
         .padding()
@@ -126,7 +155,7 @@ struct MaterialDetailView: View {
                     let dataPdf = try Data(contentsOf: selectedUrl)
                     
                     let namaFileAsli = selectedUrl.lastPathComponent
-                    let urlFilePDF = viewModel.savePdf(fileName: namaFileAsli, pdfData: dataPdf)
+                    let urlFilePDF = viewModel.savePdf(fileName: namaFileAsli, pdfData: dataPdf, topic: material.topic)
                     material.sumber.append(urlFilePDF ?? URL(string: "")!)
                     
                 } catch {
@@ -137,7 +166,7 @@ struct MaterialDetailView: View {
                 print("Gagal mengimpor file: \(error.localizedDescription)")
             }
         }
-
+        
     }
 }
 

@@ -9,8 +9,11 @@ import Foundation
 import Observation
 import SwiftData
 
-@Observable
+@MainActor @Observable
 class StudyMaterialViewModel {
+    
+    
+    
     func addNewMaterial(modelContext: ModelContext, status: StudyStatus, topic: String, deskripsi: String, sumber: [URL]) {
         let newMaterial = StudyMaterial(id: UUID(), topic: topic, deskripsi: deskripsi, status: status, sumber: sumber)
         modelContext.insert(newMaterial)
@@ -24,12 +27,27 @@ class StudyMaterialViewModel {
         material.status = newStatus
     }
     
-    func savePdf(fileName: String, pdfData: Data) -> URL? {
+    func savePdf(fileName: String, pdfData: Data, topic: String) -> URL? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // masih bingung si unique identifier yg lebih praktis selain uuid
-        let formatFile = "StudyMaterial-\(UUID().uuidString)-\(fileName)"
-        let actualPath = documentsDirectory.appendingPathComponent(formatFile)
+//        let formatFile = "StudyMaterial-\(UUID().uuidString)-\(fileName)"
+        
+//        let folderName = "\(topic)"
+//        let formatFile = "\(fileName)"
+        
+        let folderPath = documentsDirectory.appending(path: topic)
+        
+        // Bikin directory per topik
+        do {
+            try FileManager.default.createDirectory(at: folderPath, withIntermediateDirectories: true, attributes: nil)
+        } catch let error as NSError {
+            print("Failed to create directory: \(error.localizedDescription)")
+        }
+        
+        let actualPath = folderPath.appending(path: fileName)
+        print(actualPath.path)
+        let dataSize = pdfData.count
         
         do {
             try pdfData.write(to: actualPath, options: .atomic)

@@ -78,7 +78,8 @@ struct AddMaterialView: View {
                         let dataPdf = try Data(contentsOf: selectedUrl)
                         
                         let namaFileAsli = selectedUrl.lastPathComponent
-                        let urlFilePDF = viewModel.savePdf(fileName: namaFileAsli, pdfData: dataPdf)
+                        let urlFilePDF = viewModel.savePdf(fileName: namaFileAsli, pdfData: dataPdf, topic: topic)
+                        print("URL: \(urlFilePDF?.absoluteString ?? "")") // debug muncul apa engga
                         sumber.append(urlFilePDF ?? URL(string: "")!)
                         
                     } catch {

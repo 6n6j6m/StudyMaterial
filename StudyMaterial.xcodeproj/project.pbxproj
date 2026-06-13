@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		DB90C7EE2F8576490041F188 /* LearningMaterials.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LearningMaterials.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB90C7EE2F8576490041F188 /* StudyMaterial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyMaterial.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		DB90C7EF2F8576490041F188 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DB90C7EE2F8576490041F188 /* LearningMaterials.app */,
+				DB90C7EE2F8576490041F188 /* StudyMaterial.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DB90C7ED2F8576490041F188 /* LearningMaterials */ = {
+		DB90C7ED2F8576490041F188 /* StudyMaterial */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "LearningMaterials" */;
+			buildConfigurationList = DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "StudyMaterial" */;
 			buildPhases = (
 				DB90C7EA2F8576490041F188 /* Sources */,
 				DB90C7EB2F8576490041F188 /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				DB90C7F02F8576490041F188 /* LearningMaterials */,
 			);
-			name = LearningMaterials;
+			name = StudyMaterial;
 			packageProductDependencies = (
 			);
 			productName = MyBookShelf;
-			productReference = DB90C7EE2F8576490041F188 /* LearningMaterials.app */;
+			productReference = DB90C7EE2F8576490041F188 /* StudyMaterial.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DB90C7ED2F8576490041F188 /* LearningMaterials */,
+				DB90C7ED2F8576490041F188 /* StudyMaterial */,
 			);
 		};
 /* End PBXProject section */
@@ -326,7 +326,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "LearningMaterials" */ = {
+		DB90C7F92F85764A0041F188 /* Build configuration list for PBXNativeTarget "StudyMaterial" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DB90C7FA2F85764A0041F188 /* Debug */,
