@@ -13,7 +13,6 @@ struct ListMaterial: View {
     let viewModel: StudyMaterialViewModel
     let colorScheme: ColorScheme
     let modelContext: ModelContext
-    let pageStatus: StudyStatus
     
     var body: some View {
         List {
@@ -40,7 +39,7 @@ struct ListMaterial: View {
                 
                 // Swipe Action
                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                    switch pageStatus {
+                    switch material.status {
                     case .completed:
                         Button {
                             viewModel.changeTopic(material: material, newStatus: .studying)
@@ -49,7 +48,6 @@ struct ListMaterial: View {
                                 .tint(.blue)
                         }
                         
-                        
                     case .studying:
                         Button {
                             viewModel.changeTopic(material: material, newStatus: .completed)
@@ -57,7 +55,6 @@ struct ListMaterial: View {
                             Label("Done", systemImage: "checkmark.circle")
                                 .tint(.green)
                         }
-                        
                         
                     case .planned:
                         Button {

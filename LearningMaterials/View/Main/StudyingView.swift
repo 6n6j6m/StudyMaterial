@@ -1,8 +1,3 @@
-//
-//  LearningListView.swift
-//  MyBookShelf
-//
-
 import SwiftUI
 import SwiftData
 
@@ -42,7 +37,7 @@ struct StudyingView: View {
                         .fixedSize(horizontal: false, vertical: true)
                     
                     // Show the data
-                    ListMaterial(filteredMaterials: filteredMaterials, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext, pageStatus: pageStatus)
+                    ListMaterial(filteredMaterials: filteredMaterials, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
                     
                 }
             }

@@ -27,7 +27,7 @@ class StudyMaterialViewModel {
         material.status = newStatus
     }
     
-    func savePdf(topic: String, url: URL) -> URL? {
+    func savePdf(topic: String, url: URL) -> (url: URL, size: Int) {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // masih bingung si unique identifier yg lebih praktis selain uuid
@@ -50,17 +50,19 @@ class StudyMaterialViewModel {
             if FileManager.default.fileExists(atPath: actualPath.path){
                 // skip
                 print("File already exists")
-                return nil
+                let emptyUrl = URL(fileURLWithPath: "")
+                return (emptyUrl, 0)
             }
             
             try pdfData.write(to: actualPath, options: .atomic)
             
-            return actualPath
+            return (actualPath, dataSize)
             
         } catch let error as NSError {
             print("Failed to create directory: \(error.localizedDescription)")
             
-            return nil
+            let emptyUrl = URL(fileURLWithPath: "")
+            return (emptyUrl, 0)
         }
     }
     

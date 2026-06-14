@@ -12,19 +12,19 @@ struct AddMaterialView: View {
     @Environment(\.modelContext) var modelContext // Akses SwiftData Context
     
     @Bindable var viewModel: StudyMaterialViewModel
-
+    
     @State private var status: StudyStatus = .studying
     @State private var presentImporter: Bool = false
     @State private var topic: String = ""
     @State private var deskripsi: String = ""
     @State private var sumber: [URL] = []
-
+    
     var body: some View {
         NavigationStack {
             Form {
                 Section(header: Text("Learning Details")) {
                     TextField("Topic (e.g. SwiftUI)", text: $topic)
-                        
+                    
                     TextField("deskripsi (e.g. YouTube)", text: $deskripsi)
                 }
                 
@@ -42,10 +42,10 @@ struct AddMaterialView: View {
                     } label: {
                         Label("Attach PDF", systemImage: "paperclip")
                     }
-
+                    
                 }
                 
-                            }
+            }
             .navigationTitle("New Material")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -76,16 +76,17 @@ struct AddMaterialView: View {
                     
                     do {
                         let urlFilePDF = viewModel.savePdf(topic: topic, url: selectedUrl)
-                        print("URL: \(urlFilePDF?.absoluteString ?? "")") // debug muncul apa engga
-                        sumber.append(urlFilePDF ?? URL(fileURLWithPath: ""))
-                        
+                        print(type(of: urlFilePDF))
+                        guard urlFilePDF.url != URL(fileURLWithPath: "") else { return }
+                        print("URL: \(urlFilePDF.url.absoluteString)") // debug muncul apa engga
+                        sumber.append(urlFilePDF.url)
                     }
                     
                 case .failure(let error):
                     print("Gagal mengimpor file: \(error.localizedDescription)")
                 }
             }
-
+            
         }
     }
 }

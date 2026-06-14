@@ -1,8 +1,3 @@
-//
-//  LearningListView.swift
-//  MyBookShelf
-//
-
 import SwiftUI
 import SwiftData
 
@@ -33,115 +28,11 @@ struct SearchView: View {
                     // Kosong
                     if searchText.isEmpty {
                         Spacer()
-                        List {
-                            ForEach(allMaterial) { material in
-                                NavigationLink {
-                                    MaterialDetailView(material: material, viewModel: viewModel)
-                                } label: {
-                                    VStack(alignment: .leading, spacing: 5) {
-                                        Text(material.topic)
-                                            .font(.headline)
-                                        Text(material.deskripsi)
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
-                                
-                                // Swipe Action
-                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                    switch material.status {
-                                    case .planned:
-                                        Button {
-                                            viewModel.changeTopic(material: material, newStatus: .studying)
-                                        } label: {
-                                            Label("Start", systemImage: "play.circle")
-                                        }
-                                        .tint(.blue)
-                                        
-                                    case .studying:
-                                        Button {
-                                            viewModel.changeTopic(material: material, newStatus: .completed)
-                                        } label: {
-                                            Label("Done", systemImage: "checkmark.circle")
-                                        }
-                                        .tint(.green)
-                                        
-                                    case .completed:
-                                        Button {
-                                            viewModel.changeTopic(material: material, newStatus: .studying)
-                                        } label: {
-                                            Label("Re-study", systemImage: "arrow.uturn.backward")
-                                        }
-                                        .tint(.orange)
-                                    }
-                                }
-                            }
-                            
-                            // Delete trailing untuk data yang di loop ForEach
-                            .onDelete { offsets in
-                                // SWIFTDATA: Menghapus material
-                                for index in offsets {
-                                    let materialToDelete = allMaterial[index]
-                                    viewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
-                                }
-                            }
-                        }
+                        ListMaterial(filteredMaterials: allMaterial, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
                         Spacer()
                     } else {
                         // Show the filtered one
-                        List {
-                            ForEach(filteredData) { material in
-                                NavigationLink {
-                                    MaterialDetailView(material: material, viewModel: viewModel)
-                                } label: {
-                                    VStack(alignment: .leading, spacing: 5) {
-                                        Text(material.topic)
-                                            .font(.headline)
-                                        Text(material.deskripsi)
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
-                                
-                                // Swipe Action
-                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                    switch material.status {
-                                    case .planned:
-                                        Button {
-                                            viewModel.changeTopic(material: material, newStatus: .studying)
-                                        } label: {
-                                            Label("Start", systemImage: "play.circle")
-                                        }
-                                        .tint(.blue)
-                                        
-                                    case .studying:
-                                        Button {
-                                            viewModel.changeTopic(material: material, newStatus: .completed)
-                                        } label: {
-                                            Label("Done", systemImage: "checkmark.circle")
-                                        }
-                                        .tint(.green)
-                                        
-                                    case .completed:
-                                        Button {
-                                            viewModel.changeTopic(material: material, newStatus: .studying)
-                                        } label: {
-                                            Label("Re-study", systemImage: "arrow.uturn.backward")
-                                        }
-                                        .tint(.orange)
-                                    }
-                                }
-                            }
-                            
-                            // Delete trailing untuk data yang di loop ForEach
-                            .onDelete { offsets in
-                                // SWIFTDATA: Menghapus material
-                                for index in offsets {
-                                    let materialToDelete = allMaterial[index]
-                                    viewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
-                                }
-                            }
-                        }
+                        ListMaterial(filteredMaterials: filteredData, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
                     }
                 }
             }

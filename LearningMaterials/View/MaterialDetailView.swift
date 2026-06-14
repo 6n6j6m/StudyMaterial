@@ -1,8 +1,3 @@
-//
-//  LearningmaterialDetailView.swift
-//  MyBookShelf
-//
-
 import SwiftUI
 internal import UniformTypeIdentifiers
 
@@ -68,9 +63,10 @@ struct MaterialDetailView: View {
                 
                 do {
                     let urlFilePDF = viewModel.savePdf(topic: material.topic, url: selectedUrl)
-                    guard urlFilePDF != nil else { return }
-                    material.sumber.append(urlFilePDF ?? URL(fileURLWithPath: ""))
-                    
+                    print(type(of: urlFilePDF)) // cek outputnya
+                    guard urlFilePDF.url != URL(fileURLWithPath: "") else { return }
+                    print("URL: \(urlFilePDF.url.absoluteString)") // debug muncul apa engga
+                    material.sumber.append(urlFilePDF.url)
                 }
                 
             case .failure(let error):
@@ -124,9 +120,11 @@ struct MaterialListView: View {
                             VStack(alignment: .leading) {
                                 Text(url.lastPathComponent)
                                     .font(.caption.bold())
+                                    .padding(10)
                                 
                                 Text("Size info")
                                     .font(.caption)
+                                    .padding(.horizontal, 10)
                             }
                             .padding(10)
                             
