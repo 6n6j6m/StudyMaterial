@@ -21,7 +21,7 @@ struct EmptyView: View {
             return "You've completed"
         }
     }
-
+    
     var body: some View {
         ContentUnavailableView(
             "Empty List",

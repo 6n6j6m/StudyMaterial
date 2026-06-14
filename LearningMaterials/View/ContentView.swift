@@ -7,10 +7,10 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-//    let healthStore = HealthStore()
-//    @State var selection: Int = 0
+    //    let healthStore = HealthStore()
+    //    @State var selection: Int = 0
     @State private var searchText: String = ""
-
+    
     var body: some View {
         TabView() {
             // Tab study
@@ -33,35 +33,35 @@ struct ContentView: View {
                     .searchable(text: $searchText)
             }
             
-//            GridExampleView()
-//                .tabItem {
-//                    Label("Grid", systemImage: "square.grid.3x3")
-//                }
-//            
-//            ContenView()
+            //            GridExampleView()
+            //                .tabItem {
+            //                    Label("Grid", systemImage: "square.grid.3x3")
+            //                }
+            //            
+            //            ContenView()
             
             // TryHealthKit
-//            TryHealthKit()
-//                .tabItem {
-//                    Label("Health Data", systemImage: "heart.square.fill")
-//                }
+            //            TryHealthKit()
+            //                .tabItem {
+            //                    Label("Health Data", systemImage: "heart.square.fill")
+            //                }
             
         }
         .tint(Color.primaryBlue)
-//        .onAppear {
-//            requestHealthKitAcces()
-//        }
+        //        .onAppear {
+        //            requestHealthKitAcces()
+        //        }
     }
-//    func requestHealthKitAcces() {
-//        healthStore.requestPermission {
-//            success, error in
-//            if let error = error {
-//                print(error)
-//            } else {
-//                print("success")
-//            }
-//        }
-//    }
+    //    func requestHealthKitAcces() {
+    //        healthStore.requestPermission {
+    //            success, error in
+    //            if let error = error {
+    //                print(error)
+    //            } else {
+    //                print("success")
+    //            }
+    //        }
+    //    }
 }
 
 #Preview {

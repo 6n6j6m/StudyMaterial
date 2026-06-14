@@ -1,8 +1,3 @@
-//
-//  LearningListView.swift
-//  MyBookShelf
-//
-
 import SwiftUI
 import SwiftData
 
@@ -31,7 +26,7 @@ struct CompletedView: View {
             VStack(alignment: .leading, spacing: 20) {
                 
                 CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
-                                
+                
                 // Kosong
                 if filteredMaterials.isEmpty {
                     ContentUnavailableView(
@@ -46,7 +41,7 @@ struct CompletedView: View {
                         .fixedSize(horizontal: false, vertical: true)
                     
                     // Show the data
-                    ListMaterial(filteredMaterials: filteredMaterials, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext, pageStatus: pageStatus)
+                    ListMaterial(filteredMaterials: filteredMaterials, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
                 }
             }
             .padding(20)

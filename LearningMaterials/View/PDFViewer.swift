@@ -12,17 +12,17 @@ struct PDFKitView: UIViewRepresentable {
     let url: URL
     
     func updateUIView(_ uiView: PDFView, context: Context) {
-            if let document = PDFDocument(url: url) {
-                print("Bisa memuat dokumen dari URL: \(url)")
-                uiView.document = document
-            } else {
-                print("Gagal memuat dokumen dari URL: \(url)")
-            }
+        if let document = PDFDocument(url: url) {
+            print("Bisa memuat dokumen dari URL: \(url)")
+            uiView.document = document
+        } else {
+            print("Gagal memuat dokumen dari URL: \(url)")
         }
+    }
     
     func makeUIView(context: Context) -> PDFView {
         _ = url.startAccessingSecurityScopedResource()
-
+        
         let pdfView = PDFView()
         
         pdfView.autoScales = true

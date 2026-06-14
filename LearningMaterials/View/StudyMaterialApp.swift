@@ -1,8 +1,3 @@
-//
-//  MyBookShelfApp.swift
-//  MyBookShelf
-//
-
 import SwiftUI
 import SwiftData
 
