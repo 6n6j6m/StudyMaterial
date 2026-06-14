@@ -75,15 +75,10 @@ struct AddMaterialView: View {
                     }
                     
                     do {
-                        let dataPdf = try Data(contentsOf: selectedUrl)
-                        
-                        let namaFileAsli = selectedUrl.lastPathComponent
-                        let urlFilePDF = viewModel.savePdf(fileName: namaFileAsli, pdfData: dataPdf, topic: topic)
+                        let urlFilePDF = viewModel.savePdf(topic: topic, url: selectedUrl)
                         print("URL: \(urlFilePDF?.absoluteString ?? "")") // debug muncul apa engga
-                        sumber.append(urlFilePDF ?? URL(string: "")!)
+                        sumber.append(urlFilePDF ?? URL(fileURLWithPath: ""))
                         
-                    } catch {
-                        print("Gagal membaca data file luar: \(error.localizedDescription)")
                     }
                     
                 case .failure(let error):

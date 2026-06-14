@@ -48,7 +48,6 @@ struct ContentView: View {
             
         }
         .tint(Color.primaryBlue)
-        .padding(.bottom, 10)
 //        .onAppear {
 //            requestHealthKitAcces()
 //        }

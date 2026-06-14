@@ -9,7 +9,8 @@ internal import UniformTypeIdentifiers
 struct MaterialDetailView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @State var material: StudyMaterial
-    @State var presentImporter: Bool = false
+    @State private var presentImporter: Bool = false
+    @State private var showDeleteAlert: Bool = false
     @Bindable var viewModel: StudyMaterialViewModel
     
     var body: some View {
@@ -17,62 +18,7 @@ struct MaterialDetailView: View {
             Text("Study Status")
                 .font(.headline)
             
-            HStack(alignment: .center, spacing: 0) {
-                Text("Studying")
-                    .frame(width: 120, height: 30, alignment: .center)
-                    .font(.headline)
-                    .background{
-                        switch material.status {
-                        case .studying:
-                            Color.white
-                        case .completed:
-                            Color.white.opacity(0)
-                        case .planned:
-                            Color.white.opacity(0)
-                        }
-                    }
-                    .foregroundStyle(material.status == .studying ? .black : colorScheme == .dark ? .black : .white)
-                    .cornerRadius(100)
-                
-                Text("Planned")
-                    .frame(width: 120, height: 30, alignment: .center)
-                    .font(.headline)
-                    .background{
-                        switch material.status {
-                        case .studying:
-                            Color.white.opacity(0)
-                        case .completed:
-                            Color.white.opacity(0)
-                        case .planned:
-                            Color.white
-                        }
-                    }
-                    .foregroundStyle(material.status == .planned ? .black : colorScheme == .dark ? .black : .white)
-                    .cornerRadius(100)
-                
-                
-                Text("Completed")
-                    .frame(width: 120, height: 30, alignment: .center)
-                    .font(.headline)
-                    .background{
-                        switch material.status {
-                        case .studying:
-                            Color.white.opacity(0)
-                        case .completed:
-                            Color.white
-                        case .planned:
-                            Color.white.opacity(0)
-                        }
-                    }
-                    .foregroundStyle(material.status == .completed ? .black : colorScheme == .dark ? .black : .white)
-                    .cornerRadius(100)
-                
-            }
-            .frame(maxWidth: .infinity, maxHeight: 40)
-            .background(Color.primaryBlue)
-            .cornerRadius(100)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20.0))
-            
+            StatusSelectorView(status: $material.status, colorScheme: colorScheme)
             
             
             Text("Overview & Description")
@@ -83,60 +29,29 @@ struct MaterialDetailView: View {
             
             Divider()
             
-            HStack {
-                Text("Materials in this topic")
-                    .font(.headline)
-                
-                Spacer()
-                
-                Button{
-                    presentImporter.toggle()
-                } label: {
-                    Label("Add material", systemImage: "plus")
-                }
-            }
-            .frame(maxWidth: .infinity)
+            MaterialHeader(presentImporter: $presentImporter)
             
-            ScrollView {
-                LazyVStack{
-                    ForEach(material.sumber, id: \.self){ url in
-                        NavigationLink {
-                            PDFViewer(url: url)
-                        } label: {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text("\(url.lastPathComponent)")
-                                        .font(.system(.caption, weight: .bold))
-                                    
-                                    Spacer()
-                                    
-                                    Text("Sizeaaaaaaaaaaaaaa")
-                                        .font(.system(.caption))
-                                    
-                                }
-                                .padding(10)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "ellipsis")
-                                    .padding(10)
-                            }
-                        }
-                        .padding(10)
-                        .frame(width: 365, height: 80, alignment: .topLeading)
-                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20.0))
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.gray.opacity(0.9))
-                        )
-                    }
+            // Daftar materiny
+            MaterialListView(
+                sources: $material.sumber,
+                colorScheme: colorScheme,
+                onDeleteTap: { url in // masukkin proses dari fungsinya
+                    viewModel.selectedURL = url
+                    showDeleteAlert = true
                 }
+            )
+        }
+        .alert("Delete Chat", isPresented: $showDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                viewModel.deletePdf(material: material)
             }
-                        
-            Spacer()
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to delete this chat? This action cannot be undone.")
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .background(Color.primaryBG)
         .navigationTitle(material.topic)
         .fileImporter(isPresented: $presentImporter, allowedContentTypes: [.pdf, .image], allowsMultipleSelection: false) { result in
             switch result {
@@ -152,23 +67,116 @@ struct MaterialDetailView: View {
                 }
                 
                 do {
-                    let dataPdf = try Data(contentsOf: selectedUrl)
+                    let urlFilePDF = viewModel.savePdf(topic: material.topic, url: selectedUrl)
+                    guard urlFilePDF != nil else { return }
+                    material.sumber.append(urlFilePDF ?? URL(fileURLWithPath: ""))
                     
-                    let namaFileAsli = selectedUrl.lastPathComponent
-                    let urlFilePDF = viewModel.savePdf(fileName: namaFileAsli, pdfData: dataPdf, topic: material.topic)
-                    material.sumber.append(urlFilePDF ?? URL(string: "")!)
-                    
-                } catch {
-                    print("Gagal membaca data file luar: \(error.localizedDescription)")
                 }
                 
             case .failure(let error):
                 print("Gagal mengimpor file: \(error.localizedDescription)")
             }
         }
-        
     }
 }
+
+struct StatusSelectorView: View {
+    
+    @Binding var status: StudyStatus
+    let colorScheme: ColorScheme
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            statusButton("Studying", isActive: status == .studying)
+            statusButton("Planned", isActive: status == .planned)
+            statusButton("Completed", isActive: status == .completed)
+        }
+        .frame(maxWidth: .infinity, maxHeight: 40)
+        .background(Color.primaryBlue)
+        .cornerRadius(100)
+        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+    }
+    
+    private func statusButton(_ title: String, isActive: Bool) -> some View {
+        Text(title)
+            .frame(width: 120, height: 30)
+            .font(.headline)
+            .background(isActive ? Color.white : Color.clear)
+            .foregroundStyle(isActive ? .black : (colorScheme == .dark ? .black : .white))
+            .cornerRadius(100)
+    }
+}
+
+struct MaterialListView: View {
+    
+    @Binding var sources: [URL]
+    let colorScheme: ColorScheme
+    let onDeleteTap: (URL) -> Void
+    
+    var body: some View {
+        ScrollView {
+            LazyVStack {
+                ForEach(sources, id: \.self) { url in
+                    NavigationLink {
+                        PDFViewer(url: url)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(url.lastPathComponent)
+                                    .font(.caption.bold())
+                                
+                                Text("Size info")
+                                    .font(.caption)
+                            }
+                            .padding(10)
+                            
+                            Spacer()
+                            
+                            Menu {
+                                Button("Delete") {
+                                    onDeleteTap(url)
+                                }
+                            } label: {
+                                Image(systemName: "ellipsis")
+                                    .padding(10)
+                            }
+                        }
+                        .frame(width: 365, height: 80, alignment: .topLeading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.primaryBlue)
+                        )
+                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+                        .foregroundStyle(colorScheme == .dark ? .black : .white)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct MaterialHeader: View {
+    
+    @Binding var presentImporter: Bool
+    
+    var body: some View {
+        HStack {
+            Text("Materials in this topic")
+                .font(.headline)
+            
+            Spacer()
+            
+            Button{
+                presentImporter.toggle()
+            } label: {
+                Label("Add material", systemImage: "plus")
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+
 
 #Preview {
     @Previewable @State var material = StudyMaterial(topic: "SwiftUI", deskripsi: "YouTube", status: .studying, sumber: [])

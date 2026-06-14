@@ -6,7 +6,7 @@
 import SwiftUI
 import SwiftData
 
-struct StudyingView: View {
+struct CompletedView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.colorScheme) var colorScheme
     @State private var isShowingAddSheet = false
@@ -16,8 +16,8 @@ struct StudyingView: View {
     // Fetch models yang udah disimpen pake swiftdata
     @Query(sort: \StudyMaterial.topic) private var allMaterial: [StudyMaterial]
     
-    @State private var pageStatus: StudyStatus = .studying
-    private let title: String = "Studying"
+    @State private var pageStatus: StudyStatus = .completed
+    private let title: String = "Completed"
     
     // Filter buat status belajarny
     var filteredMaterials: [StudyMaterial] {
@@ -31,23 +31,26 @@ struct StudyingView: View {
             VStack(alignment: .leading, spacing: 20) {
                 
                 CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
-                
+                                
                 // Kosong
                 if filteredMaterials.isEmpty {
-                    EmptyView(pageStatus: $pageStatus)
-                    
+                    ContentUnavailableView(
+                        "Empty List",
+                        systemImage: Constants.closedbookIconString,
+                        description: Text("No items in \(title)")
+                    )
+                    Spacer()
                 } else {
-                    Text("Current Focus") // kena
-                        .font(.system(.headline))
+                    Text("Current Focus")
+                        .font(.headline)
                         .fixedSize(horizontal: false, vertical: true)
                     
                     // Show the data
                     ListMaterial(filteredMaterials: filteredMaterials, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext, pageStatus: pageStatus)
-                    
                 }
             }
             .padding(20)
-            .frame(maxWidth: .infinity, minHeight: 80, alignment: .leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.primaryBG)
             .navigationTitle(title)
             .toolbar {
@@ -60,15 +63,14 @@ struct StudyingView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isShowingAddSheet) {
-                AddMaterialView(viewModel: viewModel)
-            }
-            
+        }
+        .sheet(isPresented: $isShowingAddSheet) {
+            AddMaterialView(viewModel: viewModel)
         }
     }
 }
 
 #Preview {
-    StudyingView()
+    CompletedView()
         .modelContainer(for: StudyMaterial.self, inMemory: true)
 }

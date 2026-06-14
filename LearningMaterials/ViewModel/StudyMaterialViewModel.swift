@@ -11,7 +11,7 @@ import SwiftData
 
 @MainActor @Observable
 class StudyMaterialViewModel {
-    
+    var selectedURL: URL = URL(string: "https://www.google.com") ?? URL(fileURLWithPath: "")
     
     
     func addNewMaterial(modelContext: ModelContext, status: StudyStatus, topic: String, deskripsi: String, sumber: [URL]) {
@@ -27,41 +27,50 @@ class StudyMaterialViewModel {
         material.status = newStatus
     }
     
-    func savePdf(fileName: String, pdfData: Data, topic: String) -> URL? {
+    func savePdf(topic: String, url: URL) -> URL? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // masih bingung si unique identifier yg lebih praktis selain uuid
-//        let formatFile = "StudyMaterial-\(UUID().uuidString)-\(fileName)"
+        //        let fileName = "StudyMaterial-\(UUID().uuidString)-\(fileName)"
         
-//        let folderName = "\(topic)"
-//        let formatFile = "\(fileName)"
-        
-        let folderPath = documentsDirectory.appending(path: topic)
         
         // Bikin directory per topik
         do {
+            let pdfData = try Data(contentsOf: url)
+            let fileName = url.lastPathComponent
+            
+            let folderPath = documentsDirectory.appending(path: topic)
+            let dataSize = pdfData.count
+            
             try FileManager.default.createDirectory(at: folderPath, withIntermediateDirectories: true, attributes: nil)
-        } catch let error as NSError {
-            print("Failed to create directory: \(error.localizedDescription)")
-        }
-        
-        let actualPath = folderPath.appending(path: fileName)
-        print(actualPath.path)
-        let dataSize = pdfData.count
-        
-        do {
+            
+            let actualPath = folderPath.appending(path: fileName)
+            
+            // Check filenya udah ada apa belom biar ga ngawur
+            if FileManager.default.fileExists(atPath: actualPath.path){
+                // skip
+                print("File already exists")
+                return nil
+            }
+            
             try pdfData.write(to: actualPath, options: .atomic)
             
-
-            print("Successfully save PDF to: \(actualPath.path)")
             return actualPath
             
-        } catch {
-            print("Fail to save PDF: \(error.localizedDescription)")
+        } catch let error as NSError {
+            print("Failed to create directory: \(error.localizedDescription)")
             
             return nil
         }
     }
-
+    
+    func deletePdf(material: StudyMaterial) {
+        do {
+            try FileManager.default.removeItem(at: selectedURL)
+            material.sumber.removeAll { $0 == selectedURL}
+        } catch {
+            print("Delete failed: \(error)")
+        }
+    }
     
 }
