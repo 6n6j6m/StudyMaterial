@@ -17,25 +17,8 @@ struct ListMaterial: View {
     var body: some View {
         List {
             ForEach(filteredMaterials) { material in
-                NavigationLink {
-                    MaterialDetailView(material: material, viewModel: viewModel)
-                } label: {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(material.topic)
-                            .font(.headline)
-                            .foregroundStyle(Color.primary)
-                        Text(material.deskripsi)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .lineLimit(2)
-                        Text("\(material.sumber.count) Sources")
-                            .padding(5)
-                            .font(.caption)
-                            .background(Color.primaryBlue)
-                            .foregroundStyle(colorScheme == .dark ? .black : .white)
-                            .cornerRadius(10)
-                    }
-                }
+                
+                RowMaterialView(material: material, viewModel: viewModel, colorScheme: colorScheme)
                 
                 // Swipe Action
                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -78,7 +61,35 @@ struct ListMaterial: View {
         }
         .listStyle(.plain)
     }
+}
+
+struct RowMaterialView: View {
+    let material: StudyMaterial
+    let viewModel: StudyMaterialViewModel
+    let colorScheme: ColorScheme
     
+    var body: some View {
+        NavigationLink {
+            MaterialDetailView(material: material, viewModel: viewModel)
+        } label: {
+            VStack(alignment: .leading, spacing: 5) {
+                Text(material.topic)
+                    .font(.headline)
+                    .foregroundStyle(Color.primary)
+                Text(material.deskripsi)
+                    .font(.caption)
+                    .foregroundColor(.primary)
+                    .lineLimit(1)
+                Text("\(material.sumber.count) Sources")
+                    .padding(5)
+                    .font(.caption)
+                    .background(Color.primaryBlue)
+                    .foregroundStyle(colorScheme == .dark ? .black : .white)
+                    .cornerRadius(10)
+            }
+        }
+
+    }
 }
 //
 //#Preview {

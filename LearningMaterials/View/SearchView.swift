@@ -7,6 +7,7 @@ struct SearchView: View {
     
     @State private var isShowingAddSheet = false
     @State private var viewModel = StudyMaterialViewModel()
+    @State private var imageView = UIImageView()
     
     // Fetch models yang udah disimpen pake swiftdata
     @Query(sort: \StudyMaterial.topic) private var allMaterial: [StudyMaterial]

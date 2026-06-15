@@ -1,8 +1,8 @@
 //
-//  StudyMaterialViewModel.swift
-//  LearningMaterials
+//  FileMaterialViewModel.swift
+//  StudyMaterial
 //
-//  Created by Muhammad Najmi Rahmani  on 10/06/26.
+//  Created by Muhammad Najmi Rahmani  on 15/06/26.
 //
 
 import Foundation
@@ -10,22 +10,10 @@ import Observation
 import SwiftData
 
 @Observable
-class StudyMaterialViewModel {
+class FileMaterialViewModel {
+    var urlToDelete: URL = URL(string: "https://www.google.com") ?? URL(fileURLWithPath: "")
     
-    func addNewMaterial(modelContext: ModelContext, status: StudyStatus, topic: String, deskripsi: String, sumber: [URL]) {
-        let newMaterial = StudyMaterial(id: UUID(), topic: topic, deskripsi: deskripsi, status: status, sumber: sumber)
-        modelContext.insert(newMaterial)
-    }
-    
-    func deleteMaterial(modelContext: ModelContext, material: StudyMaterial) {
-        modelContext.delete(material)
-    }
-    
-    func changeTopic(material: StudyMaterial, newStatus: StudyStatus) {
-        material.status = newStatus
-    }
-    
-    func savePdf(topic: String, url: URL) -> (url: URL, size: Int) {
+    func savePdf(topic: String, url: URL) -> URL {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // masih bingung si unique identifier yg lebih praktis selain uuid
@@ -38,7 +26,7 @@ class StudyMaterialViewModel {
             let fileName = url.lastPathComponent
             
             let folderPath = documentsDirectory.appending(path: topic)
-            let dataSize = pdfData.count
+            let fileSize = pdfData.count
             
             try FileManager.default.createDirectory(at: folderPath, withIntermediateDirectories: true, attributes: nil)
             
@@ -49,18 +37,20 @@ class StudyMaterialViewModel {
                 // skip
                 print("File already exists")
                 let emptyUrl = URL(fileURLWithPath: "")
-                return (emptyUrl, 0)
+                return emptyUrl
             }
             
             try pdfData.write(to: actualPath, options: .atomic)
             
-            return (actualPath, dataSize)
+            let fileMaterial = FileMaterial(id: UUID(), fileURL: actualPath, fileName: fileName, fileSize: fileSize, fileExtension: actualPath.pathExtension)
+            
+            return actualPath
             
         } catch let error as NSError {
             print("Failed to create directory: \(error.localizedDescription)")
             
             let emptyUrl = URL(fileURLWithPath: "")
-            return (emptyUrl, 0)
+            return emptyUrl
         }
     }
     
@@ -72,5 +62,4 @@ class StudyMaterialViewModel {
             print("Delete failed: \(error)")
         }
     }
-    
 }
