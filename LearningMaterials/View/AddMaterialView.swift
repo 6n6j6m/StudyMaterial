@@ -11,13 +11,14 @@ struct AddMaterialView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext // Akses SwiftData Context
     
-    @Bindable var viewModel: StudyMaterialViewModel
+    var studyViewModel: StudyMaterialViewModel
+    var fileViewModel: FileMaterialViewModel
     
     @State private var status: StudyStatus = .studying
     @State private var presentImporter: Bool = false
     @State private var topic: String = ""
     @State private var deskripsi: String = ""
-    @State private var sumber: [URL] = []
+    @State private var sumber: [FileMaterial] = []
     
     var body: some View {
         NavigationStack {
@@ -53,7 +54,7 @@ struct AddMaterialView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        viewModel.addNewMaterial(modelContext: modelContext, status: status, topic: topic, deskripsi: deskripsi, sumber: sumber)
+                        studyViewModel.addNewMaterial(modelContext: modelContext, status: status, topic: topic, deskripsi: deskripsi, sumber: sumber)
                         dismiss()
                     }
                     .disabled(topic.isEmpty || deskripsi.isEmpty)
@@ -76,11 +77,12 @@ struct AddMaterialView: View {
                     }
                     
                     do {
-                        let urlFilePDF = viewModel.savePdf(topic: topic, url: selectedUrl)
-                        print(type(of: urlFilePDF))
-                        guard urlFilePDF.url != URL(fileURLWithPath: "") else { return }
-                        print("URL: \(urlFilePDF.url.absoluteString)") // debug muncul apa engga
-                        sumber.append(urlFilePDF.url)
+                        let FilePDF = fileViewModel.savePdf(topic: topic, url: selectedUrl)
+                        print(type(of: FilePDF)) // cek outputnya
+                        guard FilePDF != nil else { return print("Gagal")}
+                        print("Data: \(FilePDF)") // debug muncul apa engga
+                        sumber.append(FilePDF!)
+                        print(type(of: sumber))
                     }
                     
                 case .failure(let error):

@@ -21,9 +21,9 @@ class StudyMaterial {
     var topic: String
     var deskripsi: String
     var status: StudyStatus
-    var sumber: [URL]
+    var sumber: [FileMaterial]
     
-    init(id: UUID = UUID(), topic: String, deskripsi: String, status: StudyStatus, sumber: [URL]) {
+    init(id: UUID = UUID(), topic: String, deskripsi: String, status: StudyStatus, sumber: [FileMaterial]) {
         self.id = id
         self.topic = topic
         self.deskripsi = deskripsi

@@ -11,9 +11,9 @@ import SwiftData
 
 @Observable
 class FileMaterialViewModel {
-    var urlToDelete: URL = URL(string: "https://www.google.com") ?? URL(fileURLWithPath: "")
+    var fileToDelete: FileMaterial = FileMaterial(id: UUID(), fileURL: URL(fileURLWithPath: ""), fileName: "", fileSize: 0, fileExtension: "")
     
-    func savePdf(topic: String, url: URL) -> URL {
+    func savePdf(topic: String, url: URL) -> FileMaterial? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // masih bingung si unique identifier yg lebih praktis selain uuid
@@ -36,28 +36,26 @@ class FileMaterialViewModel {
             if FileManager.default.fileExists(atPath: actualPath.path){
                 // skip
                 print("File already exists")
-                let emptyUrl = URL(fileURLWithPath: "")
-                return emptyUrl
+                return nil
             }
             
             try pdfData.write(to: actualPath, options: .atomic)
             
-            let fileMaterial = FileMaterial(id: UUID(), fileURL: actualPath, fileName: fileName, fileSize: fileSize, fileExtension: actualPath.pathExtension)
+//            let fileMaterial = FileMaterial(id: UUID(), fileURL: actualPath, fileName: fileName, fileSize: fileSize, fileExtension: actualPath.pathExtension)
             
-            return actualPath
+            return FileMaterial(id: UUID(), fileURL: actualPath, fileName: fileName, fileSize: fileSize, fileExtension: actualPath.pathExtension)
             
         } catch let error as NSError {
             print("Failed to create directory: \(error.localizedDescription)")
             
-            let emptyUrl = URL(fileURLWithPath: "")
-            return emptyUrl
+            return nil
         }
     }
     
     func deletePdf(material: StudyMaterial) {
         do {
-            try FileManager.default.removeItem(at: urlToDelete)
-            material.sumber.removeAll { $0 == urlToDelete}
+            try FileManager.default.removeItem(at: fileToDelete.fileURL)
+            material.sumber.removeAll { $0 == fileToDelete}
         } catch {
             print("Delete failed: \(error)")
         }

@@ -9,23 +9,24 @@ import SwiftUI
 import SwiftData
 
 struct ListMaterial: View {
-    let filteredMaterials: [StudyMaterial]
-    let viewModel: StudyMaterialViewModel
-    let colorScheme: ColorScheme
-    let modelContext: ModelContext
+    var filteredMaterials: [StudyMaterial]
+    var studyViewModel: StudyMaterialViewModel
+    var fileViewModel: FileMaterialViewModel
+    var colorScheme: ColorScheme
+    var modelContext: ModelContext
     
     var body: some View {
         List {
             ForEach(filteredMaterials) { material in
                 
-                RowMaterialView(material: material, viewModel: viewModel, colorScheme: colorScheme)
+                RowMaterialView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme)
                 
                 // Swipe Action
                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                     switch material.status {
                     case .completed:
                         Button {
-                            viewModel.changeTopic(material: material, newStatus: .studying)
+                            studyViewModel.changeTopic(material: material, newStatus: .studying)
                         } label:{
                             Label("Re-study", systemImage: "arrow.uturn.right")
                                 .tint(.blue)
@@ -33,7 +34,7 @@ struct ListMaterial: View {
                         
                     case .studying:
                         Button {
-                            viewModel.changeTopic(material: material, newStatus: .completed)
+                            studyViewModel.changeTopic(material: material, newStatus: .completed)
                         } label:{
                             Label("Done", systemImage: "checkmark.circle")
                                 .tint(.green)
@@ -41,7 +42,7 @@ struct ListMaterial: View {
                         
                     case .planned:
                         Button {
-                            viewModel.changeTopic(material: material, newStatus: .studying)
+                            studyViewModel.changeTopic(material: material, newStatus: .studying)
                         } label: {
                             Label("Start", systemImage: "play.circle")
                                 .tint(Color.blue)
@@ -55,7 +56,7 @@ struct ListMaterial: View {
                 // SWIFTDATA: Menghapus material
                 for index in indexSet {
                     let materialToDelete = filteredMaterials[index]
-                    viewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
+                    studyViewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
                 }
             }
         }
@@ -65,12 +66,13 @@ struct ListMaterial: View {
 
 struct RowMaterialView: View {
     let material: StudyMaterial
-    let viewModel: StudyMaterialViewModel
+    let studyViewModel: StudyMaterialViewModel
+    let fileViewModel: FileMaterialViewModel
     let colorScheme: ColorScheme
     
     var body: some View {
         NavigationLink {
-            MaterialDetailView(material: material, viewModel: viewModel)
+            MaterialDetailView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
                 Text(material.topic)

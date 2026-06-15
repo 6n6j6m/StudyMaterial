@@ -9,7 +9,11 @@ struct MaterialDetailView: View {
     @State private var presentImporter: Bool = false
     @State private var showDeleteAlert: Bool = false
 //    @State var imageView = UIImageView()
-    @Bindable var viewModel: StudyMaterialViewModel
+    
+    var studyViewModel: StudyMaterialViewModel
+    var fileViewModel: FileMaterialViewModel
+    
+    
     @State private var selectedURL = URL(string: "")
     
     var body: some View {
@@ -32,10 +36,10 @@ struct MaterialDetailView: View {
             
             // Daftar materiny
             MaterialListView(
-                sources: $material.sumber,
+                sumber: $material.sumber,
                 colorScheme: colorScheme,
-                onDeleteTap: { url in // masukkin proses dari fungsinya
-                    viewModel.urlToDelete = url
+                onDeleteTap: { file in // masukkin proses dari fungsinya
+                    fileViewModel.fileToDelete = file
                     showDeleteAlert = true
                 },
                 selectedURL: $selectedURL
@@ -43,7 +47,7 @@ struct MaterialDetailView: View {
         }
         .alert("Delete Chat", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
-                viewModel.deletePdf(material: material)
+                fileViewModel.deletePdf(material: material)
             }
             Button("Cancel", role: .cancel) { }
         } message: {
@@ -67,11 +71,11 @@ struct MaterialDetailView: View {
                 }
                 
                 do {
-                    let urlFilePDF = viewModel.savePdf(topic: material.topic, url: selectedUrl)
-                    print(type(of: urlFilePDF)) // cek outputnya
-                    guard urlFilePDF.url != URL(fileURLWithPath: "") else { return }
-                    print("URL: \(urlFilePDF.url.absoluteString)") // debug muncul apa engga
-                    material.sumber.append(urlFilePDF.url)
+                    let FilePDF = fileViewModel.savePdf(topic: material.topic, url: selectedUrl)
+                    print(type(of: FilePDF)) // cek outputnya
+                    guard FilePDF != nil else { return }
+                    print("Data: \(String(describing: FilePDF))") // debug muncul apa engga
+                    material.sumber.append(FilePDF!)
                 }
                 
             case .failure(let error):
@@ -110,28 +114,28 @@ struct StatusSelectorView: View {
 
 struct MaterialListView: View {
     
-    @Binding var sources: [URL]
+    @Binding var sumber: [FileMaterial]
     let colorScheme: ColorScheme
-    let onDeleteTap: (URL) -> Void
+    let onDeleteTap: (FileMaterial) -> Void
 //    let imageView: UIImageView
     @Binding var selectedURL: URL?
     
     var body: some View {
         ScrollView {
             LazyVStack {
-                ForEach(sources, id: \.self) { url in
+                ForEach(sumber, id: \.self) { file in
                     //Check the extension if its image
-                    if url.pathExtension == "jpg" || url.pathExtension == "png" || url.pathExtension == "jpeg" {
+                    if file.fileExtension == "jpg" || file.fileExtension == "png" || file.fileExtension == "jpeg" {
                         Button {
-                            selectedURL = url
+                            selectedURL = file.fileURL
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    Text(url.lastPathComponent)
+                                    Text(file.fileName)
                                         .font(.caption.bold())
                                         .padding(10)
                                     
-                                    Text("Size info")
+                                    Text("\(Double(file.fileSize) / 1_048_576, specifier: "%.2f") MB")
                                         .font(.caption)
                                         .padding(.horizontal, 10)
                                 }
@@ -141,7 +145,7 @@ struct MaterialListView: View {
                                 
                                 Menu {
                                     Button("Delete") {
-                                        onDeleteTap(url)
+                                        onDeleteTap(file)
                                     }
                                 } label: {
                                     Image(systemName: "ellipsis")
@@ -163,25 +167,24 @@ struct MaterialListView: View {
                         //bisa juga pake pdf viewer usin navigation link
                         Button {
 //                            PDFViewer(url: url)
-                            selectedURL = url
+                            selectedURL = file.fileURL
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    Text(url.lastPathComponent)
+                                    Text(file.fileName)
                                         .font(.caption.bold())
                                         .padding(10)
                                     
-                                    Text("Size info")
+                                    Text("\(Double(file.fileSize) / 1_048_576, specifier: "%.2f") MB")
                                         .font(.caption)
-                                        .padding(.horizontal, 10)
-                                }
+                                        .padding(.horizontal, 10)                                }
                                 .padding(10)
                                 
                                 Spacer()
                                 
                                 Menu {
                                     Button("Delete") {
-                                        onDeleteTap(url)
+                                        onDeleteTap(file)
                                     }
                                 } label: {
                                     Image(systemName: "ellipsis")
@@ -227,9 +230,10 @@ struct MaterialHeader: View {
 
 #Preview {
     @Previewable @State var material = StudyMaterial(topic: "SwiftUI", deskripsi: "YouTube", status: .studying, sumber: [])
-    @Previewable @State var viewModel = StudyMaterialViewModel()
-    @Previewable @State var imageView = UIImageView()
+    @Previewable @State var studyViewModel = StudyMaterialViewModel()
+    @Previewable @State var fileViewModel = FileMaterialViewModel()
+//    @Previewable @State var imageView = UIImageView()
     NavigationStack {
-        MaterialDetailView(material: material, viewModel: viewModel)
+        MaterialDetailView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel)
     }
 }

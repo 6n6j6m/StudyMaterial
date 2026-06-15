@@ -39,5 +39,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: StudyMaterial.self, inMemory: true)
+        .modelContainer(for: [StudyMaterial.self, FileMaterial.self], inMemory: true)
 }

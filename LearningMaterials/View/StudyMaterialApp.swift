@@ -8,6 +8,6 @@ struct StudyMaterialApp: App {
             ContentView()
         }
         // Menambahkan Model Container untuk SwiftData
-        .modelContainer(for: [StudyMaterial.self])
+        .modelContainer(for: [StudyMaterial.self, FileMaterial.self])
     }
 }

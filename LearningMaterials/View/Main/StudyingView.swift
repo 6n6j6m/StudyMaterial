@@ -6,7 +6,8 @@ struct StudyingView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var isShowingAddSheet = false
     
-    @State private var viewModel = StudyMaterialViewModel()
+    @State private var studyViewModel = StudyMaterialViewModel()
+    @State private var fileViewModel = FileMaterialViewModel()
     
     // Fetch models yang udah disimpen pake swiftdata
     @Query(sort: \StudyMaterial.topic) private var allMaterial: [StudyMaterial]
@@ -37,7 +38,7 @@ struct StudyingView: View {
                         .fixedSize(horizontal: false, vertical: true)
                     
                     // Show the data
-                    ListMaterial(filteredMaterials: filteredMaterials, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
+                    ListMaterial(filteredMaterials: filteredMaterials, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme, modelContext: modelContext)
                     
                 }
             }
@@ -56,7 +57,7 @@ struct StudyingView: View {
                 }
             }
             .sheet(isPresented: $isShowingAddSheet) {
-                AddMaterialView(viewModel: viewModel)
+                AddMaterialView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
             }
             
         }
@@ -65,5 +66,5 @@ struct StudyingView: View {
 
 #Preview {
     StudyingView()
-        .modelContainer(for: StudyMaterial.self, inMemory: true)
+        .modelContainer(for: [StudyMaterial.self, FileMaterial.self], inMemory: true)
 }
