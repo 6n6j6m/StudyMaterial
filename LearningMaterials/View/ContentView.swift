@@ -32,36 +32,9 @@ struct ContentView: View {
                 SearchView(searchText: $searchText, title: "Search")
                     .searchable(text: $searchText)
             }
-            
-            //            GridExampleView()
-            //                .tabItem {
-            //                    Label("Grid", systemImage: "square.grid.3x3")
-            //                }
-            //            
-            //            ContenView()
-            
-            // TryHealthKit
-            //            TryHealthKit()
-            //                .tabItem {
-            //                    Label("Health Data", systemImage: "heart.square.fill")
-            //                }
-            
         }
         .tint(Color.primaryBlue)
-        //        .onAppear {
-        //            requestHealthKitAcces()
-        //        }
     }
-    //    func requestHealthKitAcces() {
-    //        healthStore.requestPermission {
-    //            success, error in
-    //            if let error = error {
-    //                print(error)
-    //            } else {
-    //                print("success")
-    //            }
-    //        }
-    //    }
 }
 
 #Preview {

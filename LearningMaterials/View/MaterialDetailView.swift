@@ -1,12 +1,16 @@
 import SwiftUI
 internal import UniformTypeIdentifiers
+import QuickLook
+
 
 struct MaterialDetailView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @State var material: StudyMaterial
     @State private var presentImporter: Bool = false
     @State private var showDeleteAlert: Bool = false
+//    @State var imageView = UIImageView()
     @Bindable var viewModel: StudyMaterialViewModel
+    @State private var selectedURL = URL(string: "")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -31,9 +35,10 @@ struct MaterialDetailView: View {
                 sources: $material.sumber,
                 colorScheme: colorScheme,
                 onDeleteTap: { url in // masukkin proses dari fungsinya
-                    viewModel.selectedURL = url
+                    viewModel.urlToDelete = url
                     showDeleteAlert = true
-                }
+                },
+                selectedURL: $selectedURL
             )
         }
         .alert("Delete Chat", isPresented: $showDeleteAlert) {
@@ -108,44 +113,90 @@ struct MaterialListView: View {
     @Binding var sources: [URL]
     let colorScheme: ColorScheme
     let onDeleteTap: (URL) -> Void
+//    let imageView: UIImageView
+    @Binding var selectedURL: URL?
     
     var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach(sources, id: \.self) { url in
-                    NavigationLink {
-                        PDFViewer(url: url)
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(url.lastPathComponent)
-                                    .font(.caption.bold())
-                                    .padding(10)
-                                
-                                Text("Size info")
-                                    .font(.caption)
-                                    .padding(.horizontal, 10)
-                            }
-                            .padding(10)
-                            
-                            Spacer()
-                            
-                            Menu {
-                                Button("Delete") {
-                                    onDeleteTap(url)
+                    //Check the extension if its image
+                    if url.pathExtension == "jpg" || url.pathExtension == "png" || url.pathExtension == "jpeg" {
+                        Button {
+                            selectedURL = url
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(url.lastPathComponent)
+                                        .font(.caption.bold())
+                                        .padding(10)
+                                    
+                                    Text("Size info")
+                                        .font(.caption)
+                                        .padding(.horizontal, 10)
                                 }
-                            } label: {
-                                Image(systemName: "ellipsis")
-                                    .padding(10)
+                                .padding(10)
+                                
+                                Spacer()
+                                
+                                Menu {
+                                    Button("Delete") {
+                                        onDeleteTap(url)
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis")
+                                        .padding(10)
+                                }
                             }
+                            .frame(width: 365, height: 80, alignment: .topLeading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.primaryBlue)
+                            )
+                            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+                            .foregroundStyle(colorScheme == .dark ? .black : .white)
+
                         }
-                        .frame(width: 365, height: 80, alignment: .topLeading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.primaryBlue)
-                        )
-                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
-                        .foregroundStyle(colorScheme == .dark ? .black : .white)
+                        .quickLookPreview($selectedURL)
+                        
+                    } else {
+                        //bisa juga pake pdf viewer usin navigation link
+                        Button {
+//                            PDFViewer(url: url)
+                            selectedURL = url
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(url.lastPathComponent)
+                                        .font(.caption.bold())
+                                        .padding(10)
+                                    
+                                    Text("Size info")
+                                        .font(.caption)
+                                        .padding(.horizontal, 10)
+                                }
+                                .padding(10)
+                                
+                                Spacer()
+                                
+                                Menu {
+                                    Button("Delete") {
+                                        onDeleteTap(url)
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis")
+                                        .padding(10)
+                                }
+                            }
+                            .frame(width: 365, height: 80, alignment: .topLeading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.primaryBlue)
+                            )
+                            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
+                            .foregroundStyle(colorScheme == .dark ? .black : .white)
+                        }
+                        .quickLookPreview($selectedURL)
                     }
                 }
             }
@@ -174,11 +225,10 @@ struct MaterialHeader: View {
     }
 }
 
-
-
 #Preview {
     @Previewable @State var material = StudyMaterial(topic: "SwiftUI", deskripsi: "YouTube", status: .studying, sumber: [])
     @Previewable @State var viewModel = StudyMaterialViewModel()
+    @Previewable @State var imageView = UIImageView()
     NavigationStack {
         MaterialDetailView(material: material, viewModel: viewModel)
     }

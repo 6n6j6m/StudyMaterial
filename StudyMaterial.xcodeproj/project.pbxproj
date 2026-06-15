@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DB171D052FDFDE7200C2EDFC /* StudyMaterial-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB171D042FDFDE7200C2EDFC /* StudyMaterial-Info.plist */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		DB171D042FDFDE7200C2EDFC /* StudyMaterial-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "StudyMaterial-Info.plist"; sourceTree = "<group>"; };
 		DB90C7EE2F8576490041F188 /* StudyMaterial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyMaterial.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +37,7 @@
 		DB90C7E52F8576490041F188 = {
 			isa = PBXGroup;
 			children = (
+				DB171D042FDFDE7200C2EDFC /* StudyMaterial-Info.plist */,
 				DB90C7F02F8576490041F188 /* LearningMaterials */,
 				DB90C7EF2F8576490041F188 /* Products */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB171D052FDFDE7200C2EDFC /* StudyMaterial-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +265,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "StudyMaterial-Info.plist";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app is gonna use your health data ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -291,6 +299,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "StudyMaterial-Info.plist";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app is gonna use your health data ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
