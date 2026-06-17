@@ -10,9 +10,8 @@ struct MaterialDetailView: View {
     @State private var showDeleteAlert: Bool = false
 //    @State var imageView = UIImageView()
     
-    var studyViewModel: StudyMaterialViewModel
-    var fileViewModel: FileMaterialViewModel
-    
+    @Bindable var studyViewModel: StudyMaterialViewModel
+    @Bindable var fileViewModel: FileMaterialViewModel
     
     @State private var selectedURL = URL(string: "")
     
@@ -42,7 +41,7 @@ struct MaterialDetailView: View {
                     fileViewModel.fileToDelete = file
                     showDeleteAlert = true
                 },
-                selectedURL: $selectedURL
+                fileViewModel: fileViewModel, selectedURL: $selectedURL
             )
         }
         .alert("Delete Chat", isPresented: $showDeleteAlert) {
@@ -53,6 +52,9 @@ struct MaterialDetailView: View {
         } message: {
             Text("Are you sure you want to delete this chat? This action cannot be undone.")
         }
+        .sheet(isPresented: $fileViewModel.showSummary, content: {
+            SummaryView(fileViewModel: fileViewModel)
+        })
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(Color.primaryBG)
@@ -117,6 +119,7 @@ struct MaterialListView: View {
     @Binding var sumber: [FileMaterial]
     let colorScheme: ColorScheme
     let onDeleteTap: (FileMaterial) -> Void
+    let fileViewModel: FileMaterialViewModel
 //    let imageView: UIImageView
     @Binding var selectedURL: URL?
     
@@ -185,6 +188,14 @@ struct MaterialListView: View {
                                 Menu {
                                     Button("Delete") {
                                         onDeleteTap(file)
+                                    }
+                                    
+                                    if file.fileExtension == "pdf" {
+                                        Button("Summarize this") {
+                                            Task{
+                                                await fileViewModel.summarizePdf(file: file)
+                                            }
+                                        }
                                     }
                                 } label: {
                                     Image(systemName: "ellipsis")

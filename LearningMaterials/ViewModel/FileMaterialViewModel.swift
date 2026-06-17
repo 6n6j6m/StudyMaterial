@@ -8,9 +8,20 @@
 import Foundation
 import Observation
 import SwiftData
+import FoundationModels
+import PDFKit
 
 @Observable
 class FileMaterialViewModel {
+    
+    var paperSummary: PDFSummary = PDFSummary(reasoningSteps: "", title: "", authors: "", contextAndObjective: "", methods: "", primaryResults: "", discussionAndImpact: "")
+    
+    var showSummary: Bool = false
+    var isSummarizing: Bool = false
+    var summaryResult: String = ""
+    
+    private let model = SystemLanguageModel.default
+    
     var fileToDelete: FileMaterial = FileMaterial(id: UUID(), fileURL: URL(fileURLWithPath: ""), fileName: "", fileSize: 0, fileExtension: "")
     
     func savePdf(topic: String, url: URL) -> FileMaterial? {
@@ -41,7 +52,7 @@ class FileMaterialViewModel {
             
             try pdfData.write(to: actualPath, options: .atomic)
             
-//            let fileMaterial = FileMaterial(id: UUID(), fileURL: actualPath, fileName: fileName, fileSize: fileSize, fileExtension: actualPath.pathExtension)
+            //            let fileMaterial = FileMaterial(id: UUID(), fileURL: actualPath, fileName: fileName, fileSize: fileSize, fileExtension: actualPath.pathExtension)
             
             return FileMaterial(id: UUID(), fileURL: actualPath, fileName: fileName, fileSize: fileSize, fileExtension: actualPath.pathExtension)
             
@@ -59,5 +70,55 @@ class FileMaterialViewModel {
         } catch {
             print("Delete failed: \(error)")
         }
+    }
+    
+    func extractText(file: FileMaterial) -> String? {
+        guard let pdf = PDFDocument(url: file.fileURL) else { return nil }
+        let pageCount = pdf.pageCount
+        
+        var extractedText = ""
+        
+        for pageIndex in 0..<2 {
+            guard let page = pdf.page(at: pageIndex) else { continue }
+            if let pageText = page.string {
+                extractedText += pageText
+                extractedText += "\n"
+            } else { continue }
+        }
+        
+        return extractedText
+    }
+    
+    func summarizePdf(file: FileMaterial) async {
+        guard model.isAvailable else {
+            print("model not available")
+            return
+        }
+        
+        let modelContext = extractText(file: file)
+        let prompt = "Summarize this whole document/text from this contetnt: \(modelContext ?? "")"
+        let session = LanguageModelSession()
+        
+        isSummarizing = true
+        
+        do {
+            print(modelContext)
+            let response = try await session.respond(to: prompt, generating: SummaryData.self)
+            print("===========================================")
+            print(response.content)
+            let result = response.content
+            paperSummary.reasoningSteps = result.reasoningSteps
+            paperSummary.authors = result.authors
+            paperSummary.contextAndObjective = result.contextAndObjective
+            paperSummary.discussionAndImpact = result.discussionAndImpact
+            paperSummary.methods = result.methods
+            paperSummary.primaryResults = result.primaryResults
+            paperSummary.title = result.title
+            showSummary = true
+        } catch {
+            print("\(error.localizedDescription)")
+        }
+        
+        isSummarizing = false
     }
 }

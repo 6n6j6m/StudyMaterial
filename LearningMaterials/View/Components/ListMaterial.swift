@@ -16,8 +16,7 @@ struct ListMaterial: View {
     var modelContext: ModelContext
     
     var body: some View {
-        List {
-            ForEach(filteredMaterials) { material in
+        List(filteredMaterials) { material in
                 
                 RowMaterialView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme)
                 
@@ -49,16 +48,23 @@ struct ListMaterial: View {
                         }
                     }
                 }
-            }
-            
-            // Delete trailing untuk data yang di loop ForEach
-            .onDelete { indexSet in
-                // SWIFTDATA: Menghapus material
-                for index in indexSet {
-                    let materialToDelete = filteredMaterials[index]
-                    studyViewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button { 
+                        studyViewModel.deleteMaterial(modelContext: modelContext, material: material)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                            .tint(.red)
+                    }
                 }
-            }
+            
+//            // Delete trailing untuk data yang di loop ForEach
+//            .onDelete { indexSet in
+//                // SWIFTDATA: Menghapus material
+//                for index in indexSet {
+//                    let materialToDelete = filteredMaterials[index]
+//                    studyViewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
+//                }
+//            }
         }
         .listStyle(.plain)
     }

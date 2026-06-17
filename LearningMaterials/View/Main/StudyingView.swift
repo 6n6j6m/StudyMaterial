@@ -25,8 +25,12 @@ struct StudyingView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
-                
-                CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
+                VStack(alignment: .leading) {
+                    Text(title)
+                        .font(.title.bold())
+                    
+                    CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
+                }
                 
                 // Kosong
                 if filteredMaterials.isEmpty {
@@ -45,7 +49,6 @@ struct StudyingView: View {
             .padding(20)
             .frame(maxWidth: .infinity, minHeight: 80, alignment: .leading)
             .background(Color.primaryBG)
-            .navigationTitle(title)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
