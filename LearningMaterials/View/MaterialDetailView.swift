@@ -5,25 +5,26 @@ import QuickLook
 
 struct MaterialDetailView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @Environment(\.openURL) private var openURL
     @State var material: StudyMaterial
-    @State private var presentImporter: Bool = false
     @State private var showDeleteAlert: Bool = false
 //    @State var imageView = UIImageView()
     
     @Bindable var studyViewModel: StudyMaterialViewModel
     @Bindable var fileViewModel: FileMaterialViewModel
     
-    @State private var selectedURL = URL(string: "")
+    @State private var urlToView = URL(string: "")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Study Status")
                 .font(.headline)
+                .foregroundStyle(.primary)
             
             StatusSelectorView(status: $material.status, colorScheme: colorScheme)
             
-            
             Text("Overview & Description")
+                .fixedSize(horizontal: false, vertical: true)
                 .font(.headline)
             
             Text(material.deskripsi)
@@ -31,17 +32,18 @@ struct MaterialDetailView: View {
             
             Divider()
             
-            MaterialHeader(presentImporter: $presentImporter)
+            MaterialHeader(fileViewModel: fileViewModel)
             
             // Daftar materiny
             MaterialListView(
                 sumber: $material.sumber,
+                openURL: openURL,
                 colorScheme: colorScheme,
                 onDeleteTap: { file in // masukkin proses dari fungsinya
                     fileViewModel.fileToDelete = file
                     showDeleteAlert = true
                 },
-                fileViewModel: fileViewModel, selectedURL: $selectedURL
+                fileViewModel: fileViewModel, urlToView: $urlToView
             )
         }
         .alert("Delete Chat", isPresented: $showDeleteAlert) {
@@ -59,30 +61,39 @@ struct MaterialDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(Color.primaryBG)
         .navigationTitle(material.topic)
-        .fileImporter(isPresented: $presentImporter, allowedContentTypes: [.pdf, .image], allowsMultipleSelection: false) { result in
-            switch result {
-            case .success(let urls):
-                guard let selectedUrl = urls.last else { return }
-                
-                // Bikin akses buat filenya
-                let gotAccess = selectedUrl.startAccessingSecurityScopedResource()
-                defer {
-                    if gotAccess {
-                        selectedUrl.stopAccessingSecurityScopedResource()
-                    }
+        .fileImporter(isPresented: $fileViewModel.presentImporter, allowedContentTypes: [.pdf, .image], allowsMultipleSelection: false) { result in
+            addMoreFile(result: result)
+        }
+    }
+    
+    private func addMoreFile(result: Result<[URL], any Error>) {
+        switch result {
+        case .success(let urls):
+            guard let selectedUrl = urls.first else { return }
+            
+            // Bikin akses buat filenya
+            // Tapi kalo dibuild ulang, akses ke filenya ilang, still figurin on how to handlenya
+            let gotAccess = selectedUrl.startAccessingSecurityScopedResource()
+            // save it into info plist
+            
+            defer {
+                if gotAccess {
+                    selectedUrl.stopAccessingSecurityScopedResource()
                 }
-                
-                do {
-                    let FilePDF = fileViewModel.savePdf(topic: material.topic, url: selectedUrl)
-                    print(type(of: FilePDF)) // cek outputnya
-                    guard FilePDF != nil else { return }
-                    print("Data: \(String(describing: FilePDF))") // debug muncul apa engga
-                    material.sumber.append(FilePDF!)
-                }
-                
-            case .failure(let error):
-                print("Gagal mengimpor file: \(error.localizedDescription)")
             }
+            
+            do {
+                print("Start import")
+                let FilePDF = fileViewModel.savePdf(topic: material.topic, url: selectedUrl)
+                print(type(of: FilePDF)) // cek outputnya
+                guard FilePDF != nil else { return print("Gagal")}
+                print("Data: \(FilePDF)") // debug muncul apa engga
+                material.sumber.append(FilePDF!)
+                print(type(of: material.sumber))
+            }
+            
+        case .failure(let error):
+            print("Gagal mengimpor file: \(error.localizedDescription)")
         }
     }
 }
@@ -106,39 +117,43 @@ struct StatusSelectorView: View {
     
     private func statusButton(_ title: String, isActive: Bool) -> some View {
         Text(title)
+            .fixedSize(horizontal: false, vertical: true)
             .frame(width: 120, height: 30)
             .font(.headline)
             .background(isActive ? Color.white : Color.clear)
             .foregroundStyle(isActive ? .black : (colorScheme == .dark ? .black : .white))
             .cornerRadius(100)
-    }
+        }
 }
 
 struct MaterialListView: View {
     
     @Binding var sumber: [FileMaterial]
+    let openURL: OpenURLAction
     let colorScheme: ColorScheme
     let onDeleteTap: (FileMaterial) -> Void
     let fileViewModel: FileMaterialViewModel
 //    let imageView: UIImageView
-    @Binding var selectedURL: URL?
+    @Binding var urlToView: URL?
     
     var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach(sumber, id: \.self) { file in
                     //Check the extension if its image
-                    if file.fileExtension == "jpg" || file.fileExtension == "png" || file.fileExtension == "jpeg" {
+                    if file.fileExtension == "URL" {
                         Button {
-                            selectedURL = file.fileURL
+                            openURL(file.fileURL)
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
                                     Text(file.fileName)
+                                        .fixedSize(horizontal: false, vertical: true)
                                         .font(.caption.bold())
                                         .padding(10)
                                     
                                     Text("\(Double(file.fileSize) / 1_048_576, specifier: "%.2f") MB")
+                                        .fixedSize(horizontal: false, vertical: true)
                                         .font(.caption)
                                         .padding(.horizontal, 10)
                                 }
@@ -164,23 +179,26 @@ struct MaterialListView: View {
                             .foregroundStyle(colorScheme == .dark ? .black : .white)
 
                         }
-                        .quickLookPreview($selectedURL)
+//                        .quickLookPreview($urlToView)
                         
                     } else {
                         //bisa juga pake pdf viewer usin navigation link
                         Button {
 //                            PDFViewer(url: url)
-                            selectedURL = file.fileURL
+                            urlToView = file.fileURL
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
                                     Text(file.fileName)
+                                        .fixedSize(horizontal: false, vertical: true)
                                         .font(.caption.bold())
                                         .padding(10)
                                     
                                     Text("\(Double(file.fileSize) / 1_048_576, specifier: "%.2f") MB")
+                                        .fixedSize(horizontal: false, vertical: true)
                                         .font(.caption)
-                                        .padding(.horizontal, 10)                                }
+                                        .padding(.horizontal, 10)
+                                }
                                 .padding(10)
                                 
                                 Spacer()
@@ -210,7 +228,7 @@ struct MaterialListView: View {
                             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
                             .foregroundStyle(colorScheme == .dark ? .black : .white)
                         }
-                        .quickLookPreview($selectedURL)
+                        .quickLookPreview($urlToView)
                     }
                 }
             }
@@ -220,19 +238,21 @@ struct MaterialListView: View {
 
 struct MaterialHeader: View {
     
-    @Binding var presentImporter: Bool
+    @Bindable var fileViewModel: FileMaterialViewModel
     
     var body: some View {
         HStack {
             Text("Materials in this topic")
+                .fixedSize(horizontal: false, vertical: true)
                 .font(.headline)
             
             Spacer()
             
             Button{
-                presentImporter.toggle()
+                fileViewModel.presentImporter.toggle()
             } label: {
                 Label("Add material", systemImage: "plus")
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity)

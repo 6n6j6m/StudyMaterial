@@ -6,8 +6,8 @@ struct SearchView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var isShowingAddSheet = false
-    @State private var studyViewModel = StudyMaterialViewModel()
-    @State private var fileViewModel = FileMaterialViewModel()
+    @Bindable var studyViewModel = StudyMaterialViewModel()
+    @Bindable var fileViewModel = FileMaterialViewModel()
     @State private var imageView = UIImageView()
     
     // Fetch models yang udah disimpen pake swiftdata

@@ -13,9 +13,9 @@ import PDFKit
 
 @Observable
 class FileMaterialViewModel {
-    
     var paperSummary: PDFSummary = PDFSummary(reasoningSteps: "", title: "", authors: "", contextAndObjective: "", methods: "", primaryResults: "", discussionAndImpact: "")
     
+    var presentImporter: Bool = false
     var showSummary: Bool = false
     var isSummarizing: Bool = false
     var summaryResult: String = ""
@@ -30,6 +30,9 @@ class FileMaterialViewModel {
         // masih bingung si unique identifier yg lebih praktis selain uuid
         //        let fileName = "StudyMaterial-\(UUID().uuidString)-\(fileName)"
         
+        if url.isFileURL != true {
+            return FileMaterial(id: UUID(), fileURL: url, fileName: "", fileSize: 0, fileExtension: "URL")
+        }
         
         // Bikin directory per topik
         do {
@@ -102,7 +105,7 @@ class FileMaterialViewModel {
         isSummarizing = true
         
         do {
-            print(modelContext)
+            print(modelContext ?? "No Context")
             let response = try await session.respond(to: prompt, generating: SummaryData.self)
             print("===========================================")
             print(response.content)
@@ -121,4 +124,7 @@ class FileMaterialViewModel {
         
         isSummarizing = false
     }
+    
+    
+    
 }

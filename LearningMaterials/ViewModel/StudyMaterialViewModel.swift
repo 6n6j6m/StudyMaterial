@@ -11,6 +11,7 @@ import SwiftData
 
 @Observable
 class StudyMaterialViewModel {
+    var showAddMaterial: Bool = false
     
     func addNewMaterial(modelContext: ModelContext, status: StudyStatus, topic: String, deskripsi: String, sumber: [FileMaterial]) {
         let newMaterial = StudyMaterial(id: UUID(), topic: topic, deskripsi: deskripsi, status: status, sumber: sumber)

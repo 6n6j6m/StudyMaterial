@@ -17,10 +17,10 @@ struct ListMaterial: View {
     
     var body: some View {
         List(filteredMaterials) { material in
-                
-                RowMaterialView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme)
-                
-                // Swipe Action
+            
+            RowMaterialView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme)
+            
+            // Swipe Action
                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                     switch material.status {
                     case .completed:
@@ -57,14 +57,14 @@ struct ListMaterial: View {
                     }
                 }
             
-//            // Delete trailing untuk data yang di loop ForEach
-//            .onDelete { indexSet in
-//                // SWIFTDATA: Menghapus material
-//                for index in indexSet {
-//                    let materialToDelete = filteredMaterials[index]
-//                    studyViewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
-//                }
-//            }
+            //            // Delete trailing untuk data yang di loop ForEach
+            //            .onDelete { indexSet in
+            //                // SWIFTDATA: Menghapus material
+            //                for index in indexSet {
+            //                    let materialToDelete = filteredMaterials[index]
+            //                    studyViewModel.deleteMaterial(modelContext: modelContext, material: materialToDelete)
+            //                }
+            //            }
         }
         .listStyle(.plain)
     }
@@ -96,7 +96,6 @@ struct RowMaterialView: View {
                     .cornerRadius(10)
             }
         }
-
     }
 }
 //
