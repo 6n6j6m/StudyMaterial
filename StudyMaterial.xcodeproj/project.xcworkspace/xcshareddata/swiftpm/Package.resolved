@@ -1,0 +1,15 @@
+{
+  "originHash" : "b0b2027365c6037a864a53d8edc7ed9599cfc56e5da68e27469adbad621d3da5",
+  "pins" : [
+    {
+      "identity" : "swift-youtube-transcript",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NewChromantics/swift-youtube-transcript.git",
+      "state" : {
+        "branch" : "UpdatedFor2026",
+        "revision" : "b41a0b7dc01d5c709ad074040cc3e4155a3f1301"
+      }
+    }
+  ],
+  "version" : 3
+}

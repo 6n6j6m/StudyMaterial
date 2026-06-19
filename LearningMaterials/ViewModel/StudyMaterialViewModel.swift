@@ -9,6 +9,7 @@ import Foundation
 import Observation
 import SwiftData
 
+@MainActor
 @Observable
 class StudyMaterialViewModel {
     var showAddMaterial: Bool = false

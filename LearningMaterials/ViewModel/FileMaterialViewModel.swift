@@ -10,7 +10,9 @@ import Observation
 import SwiftData
 import FoundationModels
 import PDFKit
+import YoutubeTranscript
 
+@MainActor
 @Observable
 class FileMaterialViewModel {
     var paperSummary: PDFSummary = PDFSummary(reasoningSteps: "", title: "", authors: "", contextAndObjective: "", methods: "", primaryResults: "", discussionAndImpact: "")
@@ -18,11 +20,18 @@ class FileMaterialViewModel {
     var presentImporter: Bool = false
     var showSummary: Bool = false
     var isSummarizing: Bool = false
+    
     var summaryResult: String = ""
     
+    var urlToView: URL?
+    
     private let model = SystemLanguageModel.default
+    var youtubeTitle: String = "Gaada"
     
     var fileToDelete: FileMaterial = FileMaterial(id: UUID(), fileURL: URL(fileURLWithPath: ""), fileName: "", fileSize: 0, fileExtension: "")
+    
+    // placeholder buat materi dlm bntk link
+    private var urlToAdd: FileMaterial = FileMaterial(id: UUID(), fileURL: URL(fileURLWithPath: ""), fileName: "", fileSize: 0, fileExtension: "")
     
     func savePdf(topic: String, url: URL) -> FileMaterial? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -31,7 +40,7 @@ class FileMaterialViewModel {
         //        let fileName = "StudyMaterial-\(UUID().uuidString)-\(fileName)"
         
         if url.isFileURL != true {
-            return FileMaterial(id: UUID(), fileURL: url, fileName: "", fileSize: 0, fileExtension: "URL")
+            return FileMaterial(id: UUID(), fileURL: url, fileName: urlToAdd.fileName, fileSize: 0, fileExtension: "URL")
         }
         
         // Bikin directory per topik
@@ -75,7 +84,8 @@ class FileMaterialViewModel {
         }
     }
     
-    func extractText(file: FileMaterial) -> String? {
+    // helper func buat si summarize
+    private func extractText(file: FileMaterial) -> String? {
         guard let pdf = PDFDocument(url: file.fileURL) else { return nil }
         let pageCount = pdf.pageCount
         
@@ -125,6 +135,29 @@ class FileMaterialViewModel {
         isSummarizing = false
     }
     
+    func getYouTubeTranscript(url: URL) async {
+        do {
+            let config = TranscriptConfig(lang: "en")
+            let transcript = try await YoutubeTranscript.fetchTranscript(for: url.absoluteString, config: config)
+            for entry in transcript {
+                print("\(entry.offset)s: \(entry.text)")
+            }
+        } catch {
+            print("Failed to fetch transcript: \(error.localizedDescription)")
+        }
+    }
     
-    
+    @MainActor
+    func getYouTubeTitle(url: String) async {
+        do {
+            let video = Video(videoUid: url)
+            let metadata = try await video.GetMeta()
+            
+            print(metadata.videoDetails.title)
+            urlToAdd.fileName = metadata.videoDetails.title
+            print(youtubeTitle)
+        } catch {
+            print("\(error.localizedDescription)")
+        }
+    }
 }

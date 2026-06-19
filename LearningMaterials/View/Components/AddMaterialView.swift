@@ -15,7 +15,6 @@ struct AddMaterialView: View {
     @Bindable var fileViewModel: FileMaterialViewModel
     
     @State private var status: StudyStatus = .studying
-    //    @State private var presentImporter: Bool = false
     @State private var topic: String = ""
     @State private var deskripsi: String = ""
     @State private var sumber: [FileMaterial] = []
@@ -30,6 +29,13 @@ struct AddMaterialView: View {
                     TextField("Deskripsi", text: $deskripsi)
                     
                     TextField("URL (Opsional)", text: $url)
+                        .onChange(of: url) {
+                            if url.count >= 11 {
+                                Task {
+                                    await fileViewModel.getYouTubeTitle(url: url)
+                                }
+                            }
+                        }
                 }
                 
                 Section() {
@@ -58,6 +64,10 @@ struct AddMaterialView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         if url.isEmpty == false {
+//                            Task(priority: .high) {
+//                                await fileViewModel.getYouTubeTitle(url: url)
+//                            }
+//                            Thread.sleep(forTimeInterval: 0.01)
                             let link = fileViewModel.savePdf(topic: topic, url: URL(string: url) ?? URL(fileURLWithPath: ""))
                             sumber.append(link!)
                         }

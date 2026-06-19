@@ -8,12 +8,12 @@ struct MaterialDetailView: View {
     @Environment(\.openURL) private var openURL
     @State var material: StudyMaterial
     @State private var showDeleteAlert: Bool = false
-//    @State var imageView = UIImageView()
+    @State private var showAddAlert: Bool = false
+    
+    @State private var urlYoutube: String = ""
     
     @Bindable var studyViewModel: StudyMaterialViewModel
     @Bindable var fileViewModel: FileMaterialViewModel
-    
-    @State private var urlToView = URL(string: "")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -32,7 +32,7 @@ struct MaterialDetailView: View {
             
             Divider()
             
-            MaterialHeader(fileViewModel: fileViewModel)
+            MaterialHeader(fileViewModel: fileViewModel, showAddAlert: $showAddAlert)
             
             // Daftar materiny
             MaterialListView(
@@ -43,8 +43,28 @@ struct MaterialDetailView: View {
                     fileViewModel.fileToDelete = file
                     showDeleteAlert = true
                 },
-                fileViewModel: fileViewModel, urlToView: $urlToView
+                fileViewModel: fileViewModel
             )
+        }
+        .alert("Add Youtube link", isPresented: $showAddAlert) {
+            TextField("Youtube link", text: $urlYoutube)
+                .onChange(of: urlYoutube) {
+                    if urlYoutube.count >= 11 {
+                        Task {
+                            await fileViewModel.getYouTubeTitle(url: urlYoutube)
+                        }
+                    }
+                }
+
+            
+            Button("Add", role: .confirm) {
+//                Task {
+//                    await fileViewModel.getYouTubeTitle(url: urlYoutube)
+//                }
+//                Thread.sleep(forTimeInterval: 2)
+                let newLink = fileViewModel.savePdf(topic: material.topic, url: URL(string: urlYoutube) ?? URL(fileURLWithPath: ""))
+                material.sumber.append(newLink!)
+            }
         }
         .alert("Delete Chat", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
@@ -132,9 +152,7 @@ struct MaterialListView: View {
     let openURL: OpenURLAction
     let colorScheme: ColorScheme
     let onDeleteTap: (FileMaterial) -> Void
-    let fileViewModel: FileMaterialViewModel
-//    let imageView: UIImageView
-    @Binding var urlToView: URL?
+    @Bindable var fileViewModel: FileMaterialViewModel
     
     var body: some View {
         ScrollView {
@@ -144,6 +162,9 @@ struct MaterialListView: View {
                     if file.fileExtension == "URL" {
                         Button {
                             openURL(file.fileURL)
+//                            Task {
+//                                await fileViewModel.getYouTubeTranscript(url: file.fileURL)
+//                            }
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -185,7 +206,7 @@ struct MaterialListView: View {
                         //bisa juga pake pdf viewer usin navigation link
                         Button {
 //                            PDFViewer(url: url)
-                            urlToView = file.fileURL
+                            fileViewModel.urlToView = file.fileURL
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -228,7 +249,7 @@ struct MaterialListView: View {
                             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
                             .foregroundStyle(colorScheme == .dark ? .black : .white)
                         }
-                        .quickLookPreview($urlToView)
+                        .quickLookPreview($fileViewModel.urlToView)
                     }
                 }
             }
@@ -239,6 +260,7 @@ struct MaterialListView: View {
 struct MaterialHeader: View {
     
     @Bindable var fileViewModel: FileMaterialViewModel
+    @Binding var showAddAlert: Bool
     
     var body: some View {
         HStack {
@@ -248,10 +270,17 @@ struct MaterialHeader: View {
             
             Spacer()
             
-            Button{
-                fileViewModel.presentImporter.toggle()
+            
+            Menu {
+                Button("File") {
+                    fileViewModel.presentImporter.toggle()
+                }
+                
+                Button("Youtube url") {
+                    showAddAlert.toggle()
+                }
             } label: {
-                Label("Add material", systemImage: "plus")
+                Label("Add more", systemImage: "plus")
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
