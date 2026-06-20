@@ -48,8 +48,9 @@ struct ListMaterial: View {
                         }
                     }
                 }
+            
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button { 
+                    Button {
                         studyViewModel.deleteMaterial(modelContext: modelContext, material: material)
                     } label: {
                         Label("Delete", systemImage: "trash")
@@ -96,7 +97,7 @@ struct RowMaterialView: View {
                     .cornerRadius(10)
             }
         }
-    }
+    }   
 }
 //
 //#Preview {

@@ -21,7 +21,7 @@ class FileMaterialViewModel {
     var showSummary: Bool = false
     var isSummarizing: Bool = false
     
-    var summaryResult: String = ""
+    var transcriptResult: String = ""
     
     var urlToView: URL?
     
@@ -141,7 +141,10 @@ class FileMaterialViewModel {
             let transcript = try await YoutubeTranscript.fetchTranscript(for: url.absoluteString, config: config)
             for entry in transcript {
                 print("\(entry.offset)s: \(entry.text)")
+                transcriptResult += entry.text
+                transcriptResult += "\n"
             }
+            showSummary = true
         } catch {
             print("Failed to fetch transcript: \(error.localizedDescription)")
         }

@@ -17,16 +17,16 @@ struct MaterialDetailView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Study Status")
-                .font(.headline)
-                .foregroundStyle(.primary)
+//            Text("Study Status")
+//                .font(.headline)
+//                .foregroundStyle(.primary)
             
-            StatusSelectorView(status: $material.status, colorScheme: colorScheme)
+//            StatusSelectorView(status: $material.status, colorScheme: colorScheme)
             
             Text("Overview & Description")
-                .fixedSize(horizontal: false, vertical: true)
                 .font(.headline)
-            
+                .fixedSize(horizontal: false, vertical: true)
+                            
             Text(material.deskripsi)
                 .font(.body)
             
@@ -55,24 +55,22 @@ struct MaterialDetailView: View {
                         }
                     }
                 }
-
             
             Button("Add", role: .confirm) {
-//                Task {
-//                    await fileViewModel.getYouTubeTitle(url: urlYoutube)
-//                }
-//                Thread.sleep(forTimeInterval: 2)
                 let newLink = fileViewModel.savePdf(topic: material.topic, url: URL(string: urlYoutube) ?? URL(fileURLWithPath: ""))
                 material.sumber.append(newLink!)
             }
+            .disabled(urlYoutube.count <= 11)
+
+            Button("Cancel", role: .cancel) { }
         }
-        .alert("Delete Chat", isPresented: $showDeleteAlert) {
+        .alert("Delete", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
                 fileViewModel.deletePdf(material: material)
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("Are you sure you want to delete this chat? This action cannot be undone.")
+            Text("Are you sure you want to delete this? This action cannot be undone.")
         }
         .sheet(isPresented: $fileViewModel.showSummary, content: {
             SummaryView(fileViewModel: fileViewModel)
@@ -178,7 +176,7 @@ struct MaterialListView: View {
                                         .font(.caption)
                                         .padding(.horizontal, 10)
                                 }
-                                .padding(10)
+                                .frame(width: 300, height: 80, alignment: .leading)
                                 
                                 Spacer()
                                 
@@ -186,6 +184,13 @@ struct MaterialListView: View {
                                     Button("Delete") {
                                         onDeleteTap(file)
                                     }
+                                    
+                                    Button("Get transcript") {
+                                        Task {
+                                            await fileViewModel.getYouTubeTranscript(url: file.fileURL)
+                                        }
+                                    }
+                                    
                                 } label: {
                                     Image(systemName: "ellipsis")
                                         .padding(10)

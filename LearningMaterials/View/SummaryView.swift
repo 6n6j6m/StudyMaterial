@@ -11,8 +11,12 @@ struct SummaryView: View {
     @Bindable var fileViewModel: FileMaterialViewModel
     
     var body: some View {
+                
         ScrollView(.vertical) {
             LazyVStack(alignment: .leading) {
+                
+                YoutubeTranscriptView(fileViewModel: fileViewModel)
+                
                 Section {
                     Text("Overview")
                     Text(fileViewModel.paperSummary.reasoningSteps)
@@ -67,6 +71,18 @@ struct SummaryView: View {
         }
     }
 }
+
+struct YoutubeTranscriptView: View {
+    
+    @Bindable var fileViewModel: FileMaterialViewModel
+    
+    var body: some View {
+        Text(fileViewModel.transcriptResult)
+            .padding(10)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
 //
 //#Preview {
 //    SummaryView()
