@@ -10,22 +10,24 @@ struct ContentView: View {
     //    let healthStore = HealthStore()
     //    @State var selection: Int = 0
     @State private var searchText: String = ""
+    @State private var fileViewModel = FileMaterialViewModel()
+    @State private var studyViewModel = StudyMaterialViewModel()
     
     var body: some View {
         TabView() {
             // Tab study
             Tab(Constants.studyingString, systemImage: Constants.studyingIconString){
-                StudyingView()
+                StudyingView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
             }
             
             // Tab planned
             Tab(Constants.plannedString, systemImage: Constants.plannedIconString) {
-                PlannedView()
+                PlannedView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
             }
             
             // Tab completed
             Tab(Constants.completedString, systemImage: Constants.completedIconString) {
-                CompletedView()
+                CompletedView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
             }
             
             Tab("Search", systemImage: "magnifyingglass", role: .search) {
@@ -39,5 +41,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: StudyMaterial.self, inMemory: true)
+        .modelContainer(for: [StudyMaterial.self, FileMaterial.self], inMemory: true)
 }

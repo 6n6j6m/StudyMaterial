@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DB171D052FDFDE7200C2EDFC /* StudyMaterial-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB171D042FDFDE7200C2EDFC /* StudyMaterial-Info.plist */; };
+		DB7E45242FE2CA6100C133AB /* YoutubeTranscript in Frameworks */ = {isa = PBXBuildFile; productRef = DB7E45232FE2CA6100C133AB /* YoutubeTranscript */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB7E45242FE2CA6100C133AB /* YoutubeTranscript in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +73,7 @@
 			);
 			name = StudyMaterial;
 			packageProductDependencies = (
+				DB7E45232FE2CA6100C133AB /* YoutubeTranscript */,
 			);
 			productName = MyBookShelf;
 			productReference = DB90C7EE2F8576490041F188 /* StudyMaterial.app */;
@@ -100,6 +103,9 @@
 			);
 			mainGroup = DB90C7E52F8576490041F188;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DB7E45222FE2CA6100C133AB /* XCRemoteSwiftPackageReference "swift-youtube-transcript" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DB90C7EF2F8576490041F188 /* Products */;
 			projectDirPath = "";
@@ -345,6 +351,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DB7E45222FE2CA6100C133AB /* XCRemoteSwiftPackageReference "swift-youtube-transcript" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/NewChromantics/swift-youtube-transcript.git";
+			requirement = {
+				branch = UpdatedFor2026;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DB7E45232FE2CA6100C133AB /* YoutubeTranscript */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB7E45222FE2CA6100C133AB /* XCRemoteSwiftPackageReference "swift-youtube-transcript" */;
+			productName = YoutubeTranscript;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DB90C7E62F8576490041F188 /* Project object */;
 }

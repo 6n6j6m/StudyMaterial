@@ -6,7 +6,8 @@ struct SearchView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var isShowingAddSheet = false
-    @State private var viewModel = StudyMaterialViewModel()
+    @Bindable var studyViewModel = StudyMaterialViewModel()
+    @Bindable var fileViewModel = FileMaterialViewModel()
     @State private var imageView = UIImageView()
     
     // Fetch models yang udah disimpen pake swiftdata
@@ -29,11 +30,11 @@ struct SearchView: View {
                     // Kosong
                     if searchText.isEmpty {
                         Spacer()
-                        ListMaterial(filteredMaterials: allMaterial, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
+                        ListMaterial(filteredMaterials: allMaterial, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme, modelContext: modelContext)
                         Spacer()
                     } else {
                         // Show the filtered one
-                        ListMaterial(filteredMaterials: filteredData, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
+                        ListMaterial(filteredMaterials: filteredData, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme, modelContext: modelContext)
                     }
                 }
             }
@@ -47,5 +48,5 @@ struct SearchView: View {
 #Preview {
     @Previewable @State var searchText: String = ""
     SearchView(searchText: $searchText, title: "Search")
-        .modelContainer(for: StudyMaterial.self, inMemory: true)
+        .modelContainer(for: [StudyMaterial.self, FileMaterial.self], inMemory: true)
 }

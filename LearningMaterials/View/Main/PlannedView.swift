@@ -4,9 +4,9 @@ import SwiftData
 struct PlannedView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.colorScheme) var colorScheme
-    @State private var isShowingAddSheet = false
     
-    @State private var viewModel = StudyMaterialViewModel()
+    @Bindable var studyViewModel: StudyMaterialViewModel
+    @Bindable var fileViewModel: FileMaterialViewModel
     
     // Fetch models yang udah disimpen pake swiftdata
     @Query(sort: \StudyMaterial.topic) private var allMaterial: [StudyMaterial]
@@ -24,8 +24,12 @@ struct PlannedView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
-                
-                CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
+                VStack(alignment: .leading) {
+                    Text(title)
+                        .font(.title.bold())
+                    
+                    CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
+                }
                 
                 // Kosong
                 if filteredMaterials.isEmpty {
@@ -41,17 +45,16 @@ struct PlannedView: View {
                         .fixedSize(horizontal: false, vertical: true)
                     
                     // Show the data
-                    ListMaterial(filteredMaterials: filteredMaterials, viewModel: viewModel, colorScheme: colorScheme, modelContext: modelContext)
+                    ListMaterial(filteredMaterials: filteredMaterials, studyViewModel: studyViewModel, fileViewModel: fileViewModel, colorScheme: colorScheme, modelContext: modelContext)
                 }
             }
             .padding(20)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.primaryBG)
-            .navigationTitle(title)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        isShowingAddSheet.toggle()
+                        studyViewModel.showAddMaterial.toggle()
                     } label: {
                         Image(systemName: "plus")
                             .foregroundColor(Color.primary)
@@ -59,13 +62,14 @@ struct PlannedView: View {
                 }
             }
         }
-        .sheet(isPresented: $isShowingAddSheet) {
-            AddMaterialView(viewModel: viewModel)
+        .sheet(isPresented: $studyViewModel.showAddMaterial) {
+            AddMaterialView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
         }
     }
 }
 
-#Preview {
-    PlannedView()
-        .modelContainer(for: StudyMaterial.self, inMemory: true)
-}
+//
+//#Preview {
+//    PlannedView()
+//        .modelContainer(for: [StudyMaterial.self, FileMaterial.self], inMemory: true)
+//}
