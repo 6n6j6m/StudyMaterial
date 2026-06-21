@@ -72,14 +72,14 @@ struct ListMaterial: View {
 }
 
 struct RowMaterialView: View {
-    let material: StudyMaterial
+    @State var material: StudyMaterial
     let studyViewModel: StudyMaterialViewModel
     let fileViewModel: FileMaterialViewModel
     let colorScheme: ColorScheme
     
     var body: some View {
         NavigationLink {
-            MaterialDetailView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel)
+            MaterialDetailView(material: $material, studyViewModel: studyViewModel, fileViewModel: fileViewModel)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
                 Text(material.topic)

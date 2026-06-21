@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EmptyView: View {
     
-    @Binding var pageStatus: StudyStatus
+    let pageStatus: StudyStatus
     
     var title: String {
         switch pageStatus {
