@@ -45,6 +45,7 @@ struct AddMaterialView: View {
                             Label(Constants.completedString, systemImage: Constants.completedIconString).tag(StudyStatus.completed)
                             Label(Constants.plannedString, systemImage: Constants.plannedIconString).tag(StudyStatus.planned)
                         }
+                        .pickerStyle(.segmented)
                     }
                     
                     Button {

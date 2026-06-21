@@ -11,7 +11,7 @@ struct StudyingView: View {
     // Fetch models yang udah disimpen pake swiftdata
     @Query(sort: \StudyMaterial.topic) private var allMaterial: [StudyMaterial]
     
-    @State private var pageStatus: StudyStatus = .studying
+    private let pageStatus: StudyStatus = .studying
     private let title: String = "Studying"
     
     // Filter buat status belajarny
@@ -29,12 +29,12 @@ struct StudyingView: View {
                         .font(.title.bold())
                         .fixedSize()
                     
-                    CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
+                    CardTitle(filteredMaterials: filteredMaterials, pageStatus: pageStatus, colorScheme: colorScheme)
                 }
                 
                 // Kosong
                 if filteredMaterials.isEmpty {
-                    EmptyView(pageStatus: $pageStatus)
+                    EmptyView(pageStatus: pageStatus)
                     
                 } else {
                     Text("Current Focus") // kena

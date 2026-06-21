@@ -6,7 +6,7 @@ import QuickLook
 struct MaterialDetailView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Environment(\.openURL) private var openURL
-    @State var material: StudyMaterial
+    @Binding var material: StudyMaterial
     @State private var showDeleteAlert: Bool = false
     @State private var showAddAlert: Bool = false
     
@@ -17,11 +17,18 @@ struct MaterialDetailView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-//            Text("Study Status")
-//                .font(.headline)
-//                .foregroundStyle(.primary)
+            Text("Study Status")
+                .font(.headline)
+                .foregroundStyle(.primary)
             
-//            StatusSelectorView(status: $material.status, colorScheme: colorScheme)
+            Picker("Status", selection: $material.status) {
+                Label(Constants.studyingString, systemImage: Constants.studyingIconString).tag(StudyStatus.studying)
+                Label(Constants.completedString, systemImage: Constants.completedIconString).tag(StudyStatus.completed)
+                Label(Constants.plannedString, systemImage: Constants.plannedIconString).tag(StudyStatus.planned)
+            }
+            .background(Color.primaryBlue)
+            .cornerRadius(100)
+            .pickerStyle(.segmented)
             
             Text("Overview & Description")
                 .font(.headline)
@@ -299,6 +306,6 @@ struct MaterialHeader: View {
     @Previewable @State var fileViewModel = FileMaterialViewModel()
 //    @Previewable @State var imageView = UIImageView()
     NavigationStack {
-        MaterialDetailView(material: material, studyViewModel: studyViewModel, fileViewModel: fileViewModel)
+        MaterialDetailView(material: $material, studyViewModel: studyViewModel, fileViewModel: fileViewModel)
     }
 }

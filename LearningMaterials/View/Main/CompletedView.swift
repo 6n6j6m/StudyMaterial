@@ -11,7 +11,7 @@ struct CompletedView: View {
     // Fetch models yang udah disimpen pake swiftdata
     @Query(sort: \StudyMaterial.topic) private var allMaterial: [StudyMaterial]
     
-    @State private var pageStatus: StudyStatus = .completed
+    private let pageStatus: StudyStatus = .completed
     private let title: String = "Completed"
     
     // Filter buat status belajarny
@@ -28,17 +28,13 @@ struct CompletedView: View {
                     Text(title)
                         .font(.title.bold())
                     
-                    CardTitle(filteredMaterials: filteredMaterials, pageStatus: $pageStatus, colorScheme: colorScheme)
+                    CardTitle(filteredMaterials: filteredMaterials, pageStatus: pageStatus, colorScheme: colorScheme)
                 }
                 
                 // Kosong
                 if filteredMaterials.isEmpty {
-                    ContentUnavailableView(
-                        "Empty List",
-                        systemImage: Constants.closedbookIconString,
-                        description: Text("No items in \(title)")
-                    )
-                    Spacer()
+                    EmptyView(pageStatus: pageStatus)
+                    
                 } else {
                     Text("Current Focus")
                         .font(.headline)

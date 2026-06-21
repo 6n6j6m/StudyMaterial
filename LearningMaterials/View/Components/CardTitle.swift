@@ -10,7 +10,7 @@ import SwiftUI
 struct CardTitle: View {
     
     var filteredMaterials: [StudyMaterial]
-    @Binding var pageStatus: StudyStatus
+    let pageStatus: StudyStatus
     let colorScheme: ColorScheme
     
     
