@@ -82,9 +82,16 @@ struct RowMaterialView: View {
             MaterialDetailView(material: $material, studyViewModel: studyViewModel, fileViewModel: fileViewModel)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
-                Text(material.topic)
-                    .font(.headline)
-                    .foregroundStyle(Color.primary)
+                HStack {
+                    Text(material.topic)
+                        .font(.headline)
+                        .foregroundStyle(Color.primary)
+                    
+                    Spacer()
+                    
+                    Text(material.status.rawValue)
+                        .font(.caption)
+                }
                 Text(material.deskripsi)
                     .font(.caption)
                     .foregroundColor(.primary)

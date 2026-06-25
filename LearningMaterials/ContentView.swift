@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var searchText: String = ""
     @State private var fileViewModel = FileMaterialViewModel()
     @State private var studyViewModel = StudyMaterialViewModel()
+    @State private var chatViewModel = ChatViewModel()
     
     var body: some View {
         TabView() {
@@ -21,13 +22,17 @@ struct ContentView: View {
             }
             
             // Tab planned
-            Tab(Constants.plannedString, systemImage: Constants.plannedIconString) {
-                PlannedView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
-            }
+//            Tab(Constants.plannedString, systemImage: Constants.plannedIconString) {
+//                PlannedView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
+//            }
             
             // Tab completed
             Tab(Constants.completedString, systemImage: Constants.completedIconString) {
                 CompletedView(studyViewModel: studyViewModel, fileViewModel: fileViewModel)
+            }
+            
+            Tab("Chat", systemImage: "bubble.left.and.bubble.right.fill") {
+                ChatView(chatViewModel: chatViewModel)
             }
             
             Tab("Search", systemImage: "magnifyingglass", role: .search) {

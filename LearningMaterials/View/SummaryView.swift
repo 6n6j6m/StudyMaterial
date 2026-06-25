@@ -15,7 +15,7 @@ struct SummaryView: View {
         ScrollView(.vertical) {
             LazyVStack(alignment: .leading) {
                 
-                YoutubeTranscriptView(fileViewModel: fileViewModel)
+//                YoutubeTranscriptView(fileViewModel: fileViewModel)
                 
                 Section {
                     Text("Overview")
