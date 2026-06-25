@@ -11,6 +11,7 @@ import SwiftData
 import FoundationModels
 import PDFKit
 import YoutubeTranscript
+import NaturalLanguage
 
 @MainActor
 @Observable
@@ -22,6 +23,7 @@ class FileMaterialViewModel {
     var isSummarizing: Bool = false
     
     var transcriptResult: String = ""
+    var summaryResult: String = ""
     
     var urlToView: URL?
     
@@ -85,17 +87,16 @@ class FileMaterialViewModel {
     }
     
     // helper func buat si summarize
-    private func extractText(file: FileMaterial) -> String? {
+    private func extractText(file: FileMaterial) -> [String]? {
         guard let pdf = PDFDocument(url: file.fileURL) else { return nil }
         let pageCount = pdf.pageCount
         
-        var extractedText = ""
+        var extractedText: [String] = []
         
-        for pageIndex in 0..<2 {
+        for pageIndex in 0..<pageCount {
             guard let page = pdf.page(at: pageIndex) else { continue }
             if let pageText = page.string {
-                extractedText += pageText
-                extractedText += "\n"
+                extractedText.append(pageText)
             } else { continue }
         }
         
@@ -107,16 +108,52 @@ class FileMaterialViewModel {
             print("model not available")
             return
         }
-        
-        let modelContext = extractText(file: file)
-        let prompt = "Summarize this whole document/text from this contetnt: \(modelContext ?? "")"
-        let session = LanguageModelSession()
-        
         isSummarizing = true
+        print("Start")
+        
+        let chunks = extractText(file: file)
+        var chunkSummaries: [String] = []
+        
+        guard let chunks else { return }
+        
+        for (index, chunk) in chunks.enumerated() {
+            let session = LanguageModelSession()
+            var prompt = """
+                    Summarize this section of an article:
+                    
+                    \(chunk)
+                    """
+            
+            // Include the previous summary to maintain continuity.
+            if index > 0 {
+                prompt = """
+                    Previous section summary: \(chunkSummaries[index - 1])
+                    
+                    \(prompt)
+                    """
+            }
+            
+            do {
+                let response = try await session.respond(to: prompt)
+                chunkSummaries.append(response.content)
+            } catch {
+                print("\(error.localizedDescription)")
+            }
+            
+        }
+        
+        let finalSession = LanguageModelSession()
+        let combined = chunkSummaries.joined(separator: "\n")
+        let prompt = """
+            Combine these section summaries into one cohesive summary:
+
+            \(combined)
+            """
+        
         
         do {
-            print(modelContext ?? "No Context")
-            let response = try await session.respond(to: prompt, generating: SummaryData.self)
+            print(combined)
+            let response = try await finalSession.respond(to: prompt, generating: SummaryData.self)
             print("===========================================")
             print(response.content)
             let result = response.content
@@ -150,7 +187,6 @@ class FileMaterialViewModel {
         }
     }
     
-    @MainActor
     func getYouTubeTitle(url: String) async {
         do {
             let video = Video(videoUid: url)

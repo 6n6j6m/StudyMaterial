@@ -3,6 +3,7 @@ internal import UniformTypeIdentifiers
 import QuickLook
 
 
+
 struct MaterialDetailView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Environment(\.openURL) private var openURL
@@ -24,7 +25,7 @@ struct MaterialDetailView: View {
             Picker("Status", selection: $material.status) {
                 Label(Constants.studyingString, systemImage: Constants.studyingIconString).tag(StudyStatus.studying)
                 Label(Constants.completedString, systemImage: Constants.completedIconString).tag(StudyStatus.completed)
-                Label(Constants.plannedString, systemImage: Constants.plannedIconString).tag(StudyStatus.planned)
+//                Label(Constants.plannedString, systemImage: Constants.plannedIconString).tag(StudyStatus.planned)
             }
             .background(Color.primaryBlue)
             .cornerRadius(100)
@@ -52,6 +53,10 @@ struct MaterialDetailView: View {
                 },
                 fileViewModel: fileViewModel
             )
+        }
+        .alert("Processing the summary", isPresented: $fileViewModel.isSummarizing) {
+            Button("Please wait a moment") {}
+                .disabled(fileViewModel.isSummarizing)
         }
         .alert("Add Youtube link", isPresented: $showAddAlert) {
             TextField("Youtube link", text: $urlYoutube)
@@ -94,29 +99,18 @@ struct MaterialDetailView: View {
     private func addMoreFile(result: Result<[URL], any Error>) {
         switch result {
         case .success(let urls):
-            guard let selectedUrl = urls.first else { return }
+            guard let selectedURL = urls.first else { return }
+            let gotAccess = selectedURL.startAccessingSecurityScopedResource()
+            defer { if gotAccess { selectedURL.stopAccessingSecurityScopedResource() } }
             
-            // Bikin akses buat filenya
-            // Tapi kalo dibuild ulang, akses ke filenya ilang, still figurin on how to handlenya
-            let gotAccess = selectedUrl.startAccessingSecurityScopedResource()
-            // save it into info plist
-            
-            defer {
-                if gotAccess {
-                    selectedUrl.stopAccessingSecurityScopedResource()
+            if let savedFile = fileViewModel.savePdf(topic: material.topic, url: selectedURL) {
+                Task {
+                    await RAGManager.shared?.IndexPDF(file: savedFile)
                 }
+                material.sumber.append(savedFile)
+            } else {
+                print("Gagal menyimpan PDF")
             }
-            
-            do {
-                print("Start import")
-                let FilePDF = fileViewModel.savePdf(topic: material.topic, url: selectedUrl)
-                print(type(of: FilePDF)) // cek outputnya
-                guard FilePDF != nil else { return print("Gagal")}
-                print("Data: \(FilePDF)") // debug muncul apa engga
-                material.sumber.append(FilePDF!)
-                print(type(of: material.sumber))
-            }
-            
         case .failure(let error):
             print("Gagal mengimpor file: \(error.localizedDescription)")
         }

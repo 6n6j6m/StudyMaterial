@@ -1,6 +1,24 @@
 {
-  "originHash" : "b0b2027365c6037a864a53d8edc7ed9599cfc56e5da68e27469adbad621d3da5",
+  "originHash" : "8b36ee3167d4dfea9bab836365cfc1ad92fb3d5cd7cb7836424962735473d4e8",
   "pins" : [
+    {
+      "identity" : "svdb",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Dripfarm/SVDB.git",
+      "state" : {
+        "revision" : "01e78b8bb9423e40201db450180f731c9a67c554",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+        "version" : "1.8.2"
+      }
+    },
     {
       "identity" : "swift-youtube-transcript",
       "kind" : "remoteSourceControl",
@@ -8,6 +26,15 @@
       "state" : {
         "branch" : "UpdatedFor2026",
         "revision" : "b41a0b7dc01d5c709ad074040cc3e4155a3f1301"
+      }
+    },
+    {
+      "identity" : "vecturakit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rryam/VecturaKit.git",
+      "state" : {
+        "revision" : "0259266d6975b551b9bb2b1a6202500129aa4a01",
+        "version" : "6.1.0"
       }
     }
   ],

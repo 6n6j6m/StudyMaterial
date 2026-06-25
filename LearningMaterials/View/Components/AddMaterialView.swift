@@ -43,11 +43,13 @@ struct AddMaterialView: View {
                         Picker("Status", selection: $status) {
                             Label(Constants.studyingString, systemImage: Constants.studyingIconString).tag(StudyStatus.studying)
                             Label(Constants.completedString, systemImage: Constants.completedIconString).tag(StudyStatus.completed)
-                            Label(Constants.plannedString, systemImage: Constants.plannedIconString).tag(StudyStatus.planned)
+//                            Label(Constants.plannedString, systemImage: Constants.plannedIconString).tag(StudyStatus.planned)
                         }
-                        .pickerStyle(.segmented)
+                        .pickerStyle(.inline)
                     }
-                    
+                }
+                
+                Section {
                     Button {
                         fileViewModel.presentImporter.toggle()
                     } label: {
@@ -64,11 +66,7 @@ struct AddMaterialView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        if url.isEmpty == false {
-//                            Task(priority: .high) {
-//                                await fileViewModel.getYouTubeTitle(url: url)
-//                            }
-//                            Thread.sleep(forTimeInterval: 0.01)
+                        if !url.isEmpty {
                             let link = fileViewModel.savePdf(topic: topic, url: URL(string: url) ?? URL(fileURLWithPath: ""))
                             sumber.append(link!)
                         }
@@ -86,34 +84,24 @@ struct AddMaterialView: View {
     }
     
     private func fileHandler(result: Result<[URL], any Error>) {
-        switch result {
-        case .success(let urls):
-            guard let selectedUrl = urls.first else { return }
-            
-            // Bikin akses buat filenya
-            // Tapi kalo dibuild ulang, akses ke filenya ilang, still figurin on how to handlenya
-            let gotAccess = selectedUrl.startAccessingSecurityScopedResource()
-            // save it into info plist
-            
-            defer {
-                if gotAccess {
-                    selectedUrl.stopAccessingSecurityScopedResource()
+            switch result {
+            case .success(let urls):
+                guard let selectedURL = urls.first else { return }
+                let gotAccess = selectedURL.startAccessingSecurityScopedResource()
+                defer { if gotAccess { selectedURL.stopAccessingSecurityScopedResource() } }
+                
+                if let savedFile = fileViewModel.savePdf(topic: topic, url: selectedURL) {
+                    Task {
+                        await RAGManager.shared?.IndexPDF(file: savedFile)
+                    }
+                    sumber.append(savedFile)
+                } else {
+                    print("Gagal menyimpan PDF")
                 }
+            case .failure(let error):
+                print("Gagal mengimpor file: \(error.localizedDescription)")
             }
-            
-            do {
-                let FilePDF = fileViewModel.savePdf(topic: topic, url: selectedUrl)
-                print(type(of: FilePDF)) // cek outputnya
-                guard FilePDF != nil else { return print("Gagal")}
-                print("Data: \(FilePDF)") // debug muncul apa engga
-                sumber.append(FilePDF!)
-                print(type(of: sumber))
-            }
-            
-        case .failure(let error):
-            print("Gagal mengimpor file: \(error.localizedDescription)")
         }
-    }
 }
 
 //struct StatusPDFSection: View {
